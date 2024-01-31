@@ -13,10 +13,10 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import cat.institutmarianao.shipmentsws.model.LogisticsManager;
-import cat.institutmarianao.shipmentsws.model.Receptionist;
-import cat.institutmarianao.shipmentsws.model.User;
 import ins.marianao.shipments.fxml.manager.ResourceManager;
+import ins.marianao.shipments.fxml.model.LogisticsManager;
+import ins.marianao.shipments.fxml.model.Receptionist;
+import ins.marianao.shipments.fxml.model.User;
 import ins.marianao.shipments.fxml.services.ServiceLogin;
 import ins.marianao.shipments.fxml.services.ServiceQueryUsers;
 import javafx.application.Platform;
@@ -50,23 +50,36 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class ControllerMenu implements Initializable {
-	@FXML private BorderPane appRootPane;
-	@FXML private AnchorPane portviewPane;
-	@FXML private AnchorPane loginForm;
+	@FXML
+	private BorderPane appRootPane;
+	@FXML
+	private AnchorPane portviewPane;
+	@FXML
+	private AnchorPane loginForm;
 
-	@FXML private TextField txtUsername;
-	@FXML private PasswordField txtPassword;
-	@FXML private Button btnLogin;
+	@FXML
+	private TextField txtUsername;
+	@FXML
+	private PasswordField txtPassword;
+	@FXML
+	private Button btnLogin;
 
-	@FXML private MenuBar menuBar;
-	@FXML private Menu mnShipments;
-	@FXML private Menu mnUsers;
-	@FXML private Menu mnProfile;
-	@FXML private MenuItem mnItReception;
-	@FXML private MenuItem mnItAddUser;
-	@FXML private MenuItem mnItImport;
-	@FXML private MenuItem mnItExport;
-
+	@FXML
+	private MenuBar menuBar;
+	@FXML
+	private Menu mnShipments;
+	@FXML
+	private Menu mnUsers;
+	@FXML
+	private Menu mnProfile;
+	@FXML
+	private MenuItem mnItReception;
+	@FXML
+	private MenuItem mnItAddUser;
+	@FXML
+	private MenuItem mnItImport;
+	@FXML
+	private MenuItem mnItExport;
 
 	/**
 	 * Initializes the controller class.
@@ -79,16 +92,17 @@ public class ControllerMenu implements Initializable {
 	private void logOff() {
 		try {
 			this.loadView(this.loginForm);
-			
+
 			ResourceManager.getInstance().setCurrentUser(null); // Logoff
 
 			this.disableMenu();
 
 			this.txtUsername.clear();
 			this.txtPassword.clear();
-			
+
 		} catch (Exception e) {
-			ControllerMenu.showError(ResourceManager.getInstance().getText("error.menu.view.opening"), e.getMessage(), ExceptionUtils.getStackTrace(e));
+			ControllerMenu.showError(ResourceManager.getInstance().getText("error.menu.view.opening"), e.getMessage(),
+					ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -115,39 +129,40 @@ public class ControllerMenu implements Initializable {
 			String password = this.txtPassword.getText();
 
 			final ServiceLogin login = new ServiceLogin(username, password);
-			
+
 			login.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 
-	            @Override
-	            public void handle(WorkerStateEvent t) {
-	            	User user = login.getValue();
-	    			
-	            	ResourceManager.getInstance().setCurrentUser(user); // Login
+				@Override
+				public void handle(WorkerStateEvent t) {
+					User user = login.getValue();
 
-	    			openUserForm(true);
-	    			
-	    			enableMenu(user);
-	            }
-	        });
-			
+					ResourceManager.getInstance().setCurrentUser(user); // Login
+
+					openUserForm(true);
+
+					enableMenu(user);
+				}
+			});
+
 			login.setOnFailed(new EventHandler<WorkerStateEvent>() {
 
 				@Override
 				public void handle(WorkerStateEvent t) {
 					Throwable e = t.getSource().getException();
-					
-					ControllerMenu.showError(ResourceManager.getInstance().getText("error.menu.login"), e.getMessage(), ExceptionUtils.getStackTrace(e));
+
+					ControllerMenu.showError(ResourceManager.getInstance().getText("error.menu.login"), e.getMessage(),
+							ExceptionUtils.getStackTrace(e));
 				}
 			});
-			
-			login.start();			
+
+			login.start();
 
 		} catch (Exception e) {
-			ControllerMenu.showError(ResourceManager.getInstance().getText("error.menu.login"), e.getMessage(), ExceptionUtils.getStackTrace(e));
+			ControllerMenu.showError(ResourceManager.getInstance().getText("error.menu.login"), e.getMessage(),
+					ExceptionUtils.getStackTrace(e));
 		}
 	}
 
-	
 	/**
 	 * Called when Reception menuItem is fired.
 	 *
@@ -170,8 +185,6 @@ public class ControllerMenu implements Initializable {
 		return;
 	}
 
-	
-
 	/**
 	 * Called when New User menuItem is fired.
 	 *
@@ -190,15 +203,17 @@ public class ControllerMenu implements Initializable {
 	@FXML
 	public void usersDirectoryMenuClick(ActionEvent event) {
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewUsersDirectory.fxml"), ResourceManager.getInstance().getTranslationBundle());
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewUsersDirectory.fxml"),
+					ResourceManager.getInstance().getTranslationBundle());
 			BorderPane vista = (BorderPane) loader.load();
 
 			this.loadView(vista);
 		} catch (Exception e) {
-			ControllerMenu.showError(ResourceManager.getInstance().getText("error.menu.view.opening"), e.getMessage(), ExceptionUtils.getStackTrace(e));
+			ControllerMenu.showError(ResourceManager.getInstance().getText("error.menu.view.opening"), e.getMessage(),
+					ExceptionUtils.getStackTrace(e));
 		}
 	}
-	
+
 	/**
 	 * Called when Import users menuItem is fired.
 	 *
@@ -207,22 +222,23 @@ public class ControllerMenu implements Initializable {
 	@FXML
 	public void importUsersMenuClick(ActionEvent event) {
 		try {
-			File file = this.openFileChooser(ResourceManager.getInstance().getText("error.menu.file.open"), true); 
-			
+			File file = this.openFileChooser(ResourceManager.getInstance().getText("error.menu.file.open"), true);
+
 			if (file != null) {
 				SortedSet<User> imported = ResourceManager.getInstance().importUsers(file);
-				
+
 				// TODO Import users and save/persist
 				imported = new TreeSet<User>();
 				imported.add(null);
-				
-				ControllerMenu.showInfo(ResourceManager.getInstance().getText("info.app.title"), ResourceManager.getInstance().getText("fxml.text.menu.import.ok"));
+
+				ControllerMenu.showInfo(ResourceManager.getInstance().getText("info.app.title"),
+						ResourceManager.getInstance().getText("fxml.text.menu.import.ok"));
 			}
 		} catch (Exception e) {
-			ControllerMenu.showError(ResourceManager.getInstance().getText("error.menu.import"), e.getMessage(), ExceptionUtils.getStackTrace(e));
+			ControllerMenu.showError(ResourceManager.getInstance().getText("error.menu.import"), e.getMessage(),
+					ExceptionUtils.getStackTrace(e));
 		}
 	}
-	
 
 	/**
 	 * Called when Export menuItem is fired.
@@ -232,43 +248,47 @@ public class ControllerMenu implements Initializable {
 	@FXML
 	public void exportUsersMenuClick(ActionEvent event) {
 		try {
-			File file = this.openFileChooser(ResourceManager.getInstance().getText("error.menu.file.write"), false); 
-			
+			File file = this.openFileChooser(ResourceManager.getInstance().getText("error.menu.file.write"), false);
+
 			if (file != null) {
 				final ServiceQueryUsers queryUsers = new ServiceQueryUsers(null, null);
-				
+
 				queryUsers.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 
-		            @Override
-		            public void handle(WorkerStateEvent t) {
-		        		SortedSet<User> toExport = new TreeSet<>(queryUsers.getValue());
-						
+					@Override
+					public void handle(WorkerStateEvent t) {
+						SortedSet<User> toExport = new TreeSet<>(queryUsers.getValue());
+
 						try {
 							ResourceManager.getInstance().exportUsers(file, toExport);
-							ControllerMenu.showInfo(ResourceManager.getInstance().getText("info.app.title"), ResourceManager.getInstance().getText("fxml.text.menu.export.ok"));
+							ControllerMenu.showInfo(ResourceManager.getInstance().getText("info.app.title"),
+									ResourceManager.getInstance().getText("fxml.text.menu.export.ok"));
 						} catch (Exception e) {
-							ControllerMenu.showError(ResourceManager.getInstance().getText("error.menu.export"), e.getMessage(), ExceptionUtils.getStackTrace(e));
+							ControllerMenu.showError(ResourceManager.getInstance().getText("error.menu.export"),
+									e.getMessage(), ExceptionUtils.getStackTrace(e));
 						}
-		            }
-		        });
-				
+					}
+				});
+
 				queryUsers.setOnFailed(new EventHandler<WorkerStateEvent>() {
 					@Override
 					public void handle(WorkerStateEvent t) {
 						Throwable e = t.getSource().getException();
-						
-						ControllerMenu.showError(ResourceManager.getInstance().getText("error.menu.web.service"), e.getMessage(), ExceptionUtils.getStackTrace(e));
+
+						ControllerMenu.showError(ResourceManager.getInstance().getText("error.menu.web.service"),
+								e.getMessage(), ExceptionUtils.getStackTrace(e));
 					}
-					
+
 				});
-				
+
 				queryUsers.start();
 			}
 		} catch (Exception e) {
-			ControllerMenu.showError(ResourceManager.getInstance().getText("error.menu.export"), e.getMessage(), ExceptionUtils.getStackTrace(e));
+			ControllerMenu.showError(ResourceManager.getInstance().getText("error.menu.export"), e.getMessage(),
+					ExceptionUtils.getStackTrace(e));
 		}
 	}
-	
+
 	/**
 	 * Called when Edit Profile menuItem is fired.
 	 *
@@ -289,6 +309,7 @@ public class ControllerMenu implements Initializable {
 
 		this.logOff();
 	}
+
 	/**
 	 * Called when About menuItem is fired.
 	 *
@@ -301,36 +322,45 @@ public class ControllerMenu implements Initializable {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("About ...");
 		alert.setHeaderText(null);
-		alert.setContentText("Copyright@" + Calendar.getInstance(new Locale("ES_CA")).get(Calendar.YEAR) + "\nÀlex Macia");
+		alert.setContentText(
+				"Copyright@" + Calendar.getInstance(new Locale("ES_CA")).get(Calendar.YEAR) + "\nÀlex Macia");
 		alert.showAndWait();
 	}
 
 	public void loadView(Pane vista) {
-		if (vista == null) return;
+		if (vista == null) {
+			return;
+		}
 
-		if (checkViewAlreadyLoaded(vista.getId())) return;
+		if (checkViewAlreadyLoaded(vista.getId())) {
+			return;
+		}
 
 		this.portviewPane.getChildren().clear();
 
-		//appRootPane.setPrefHeight(appRootPane.getHeight() - 80.0);
+		// appRootPane.setPrefHeight(appRootPane.getHeight() - 80.0);
 
 		this.portviewPane.getChildren().add(vista);
 
-		AnchorPane.setTopAnchor(vista,0.0);
-		AnchorPane.setBottomAnchor(vista,0.0);
+		AnchorPane.setTopAnchor(vista, 0.0);
+		AnchorPane.setBottomAnchor(vista, 0.0);
 		AnchorPane.setLeftAnchor(vista, 0.0);
 		AnchorPane.setRightAnchor(vista, 0.0);
-		//this.portviewPane.setVisible(true);
+		// this.portviewPane.setVisible(true);
 	}
 
 	private boolean checkViewAlreadyLoaded(String id) {
-		if (id == null || this.portviewPane != null || this.portviewPane.getChildren() != null) return false;
+		if (id == null || this.portviewPane != null || this.portviewPane.getChildren() != null) {
+			return false;
+		}
 
 		Iterator<Node> fills = this.portviewPane.getChildren().iterator();
 
 		while (fills.hasNext()) {
 			Node aux = fills.next();
-			if (id.equals(aux.getId())) return true;
+			if (id.equals(aux.getId())) {
+				return true;
+			}
 		}
 
 		return false;
@@ -340,13 +370,17 @@ public class ControllerMenu implements Initializable {
 		this.mnShipments.setVisible(true);
 		this.mnUsers.setVisible(true);
 		this.mnProfile.setVisible(true);
-		
-		/*this.menuBar.getMenus().add(1, this.mnShipments);
-		this.menuBar.getMenus().add(2, this.mnUsers);
-		this.menuBar.getMenus().add(3, this.mnProfile);*/
-		
+
+		/*
+		 * this.menuBar.getMenus().add(1, this.mnShipments);
+		 * this.menuBar.getMenus().add(2, this.mnUsers); this.menuBar.getMenus().add(3,
+		 * this.mnProfile);
+		 */
+
 		if (user != null) {
-			if (user instanceof Receptionist) this.mnItReception.setDisable(false);
+			if (user instanceof Receptionist) {
+				this.mnItReception.setDisable(false);
+			}
 			if (user instanceof LogisticsManager) {
 				this.mnItAddUser.setDisable(false);
 				this.mnItImport.setDisable(false);
@@ -361,29 +395,35 @@ public class ControllerMenu implements Initializable {
 		this.mnItAddUser.setDisable(true);
 		this.mnItImport.setDisable(true);
 		this.mnItExport.setDisable(true);
-		
-		/*this.menuBar.getMenus().remove(this.mnShipments);
-		this.menuBar.getMenus().remove(this.mnUsers);
-		this.menuBar.getMenus().remove(this.mnProfile);*/
+
+		/*
+		 * this.menuBar.getMenus().remove(this.mnShipments);
+		 * this.menuBar.getMenus().remove(this.mnUsers);
+		 * this.menuBar.getMenus().remove(this.mnProfile);
+		 */
 
 		this.mnShipments.setVisible(false);
 		this.mnUsers.setVisible(false);
 		this.mnProfile.setVisible(false);
-		
+
 	}
-	
+
 	private void openUserForm(boolean perfil) {
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewFormUser.fxml"), ResourceManager.getInstance().getTranslationBundle());
-			BorderPane vista = (BorderPane)loader.load();
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewFormUser.fxml"),
+					ResourceManager.getInstance().getTranslationBundle());
+			BorderPane vista = (BorderPane) loader.load();
 
 			ControllerFormUser controllerFormUsuari = loader.getController();
-			if (!perfil) controllerFormUsuari.enableEdition();
+			if (!perfil) {
+				controllerFormUsuari.enableEdition();
+			}
 
 			this.loadView(vista);
 		} catch (Exception e) {
 			e.printStackTrace();
-			ControllerMenu.showError(ResourceManager.getInstance().getText("error.menu.view.opening"), e.getMessage(), ExceptionUtils.getStackTrace(e));
+			ControllerMenu.showError(ResourceManager.getInstance().getText("error.menu.view.opening"), e.getMessage(),
+					ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -397,24 +437,29 @@ public class ControllerMenu implements Initializable {
 	}
 
 	public static void showError(String title, String sms, String trace) {
-		showAlert(ResourceManager.getInstance().getText("alert.title.error"), title, sms, trace, AlertType.ERROR, "error-panel");
+		showAlert(ResourceManager.getInstance().getText("alert.title.error"), title, sms, trace, AlertType.ERROR,
+				"error-panel");
 	}
 
 	public static void showError(String title, String sms) {
-		showAlert(ResourceManager.getInstance().getText("alert.title.error"), title, sms, null, AlertType.ERROR, "error-panel");
+		showAlert(ResourceManager.getInstance().getText("alert.title.error"), title, sms, null, AlertType.ERROR,
+				"error-panel");
 	}
-	
+
 	public static void showInfo(String title, String sms) {
-		showAlert(ResourceManager.getInstance().getText("alert.title.information"), title, sms, null, AlertType.INFORMATION, "info-panel");
+		showAlert(ResourceManager.getInstance().getText("alert.title.information"), title, sms, null,
+				AlertType.INFORMATION, "info-panel");
 	}
 
 	public static boolean showConfirm(String title, String sms) {
-		Optional<ButtonType> result = showAlert(ResourceManager.getInstance().getText("alert.title.confirm"), title, sms, null, AlertType.CONFIRMATION, "info-panel");
+		Optional<ButtonType> result = showAlert(ResourceManager.getInstance().getText("alert.title.confirm"), title,
+				sms, null, AlertType.CONFIRMATION, "info-panel");
 
 		return result.get() == ButtonType.OK;
 	}
 
-	private static Optional<ButtonType> showAlert(String title, String header, String sms, String trace, AlertType tipus, String paneId) {
+	private static Optional<ButtonType> showAlert(String title, String header, String sms, String trace,
+			AlertType tipus, String paneId) {
 
 		Alert alert = new Alert(tipus);
 		alert.setTitle(title);
@@ -422,7 +467,6 @@ public class ControllerMenu implements Initializable {
 		alert.setHeaderText(header);
 		alert.setContentText(sms);
 		alert.setResizable(true);
-
 
 		if (trace == null) {
 			alert.getDialogPane().setPrefSize(400, 120);
@@ -433,7 +477,7 @@ public class ControllerMenu implements Initializable {
 			textArea.setEditable(false);
 			textArea.setWrapText(true);
 
-			//textArea.setMaxWidth(Double.MAX_VALUE);
+			// textArea.setMaxWidth(Double.MAX_VALUE);
 			textArea.setMaxWidth(600);
 			textArea.setMaxHeight(Double.MAX_VALUE);
 			textArea.setMaxHeight(300);
@@ -449,7 +493,6 @@ public class ControllerMenu implements Initializable {
 			// Set expandable Exception into the dialog pane.
 			alert.getDialogPane().setExpandableContent(expContent);
 			alert.getDialogPane().setExpanded(false);
-
 
 			// Change Listener => property has been recalculated
 
@@ -469,41 +512,41 @@ public class ControllerMenu implements Initializable {
 
 			// Lambda version
 
-			/*alert.getDialogPane().expandedProperty().addListener((observable, oldvalue, newvalue) -> {
+			/*
+			 * alert.getDialogPane().expandedProperty().addListener((observable, oldvalue,
+			 * newvalue) -> {
+			 * 
+			 * Platform.runLater(() -> { alert.getDialogPane().requestLayout(); Stage stage
+			 * = (Stage) alert.getDialogPane().getScene().getWindow(); stage.sizeToScene();
+			 * }); });
+			 */
 
-				Platform.runLater(() -> {
-					alert.getDialogPane().requestLayout();
-					Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-					stage.sizeToScene();
-				});
-			});*/
+			// Invalidation Listener => property and has to be recalculated
 
-			// Invalidation Listener => property  and has to be recalculated
-
-			/*alert.getDialogPane().expandedProperty().addListener((observable) -> {
-
-				Platform.runLater(() -> {
-					alert.getDialogPane().requestLayout();
-					Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-					stage.sizeToScene();
-				});
-			});*/
+			/*
+			 * alert.getDialogPane().expandedProperty().addListener((observable) -> {
+			 * 
+			 * Platform.runLater(() -> { alert.getDialogPane().requestLayout(); Stage stage
+			 * = (Stage) alert.getDialogPane().getScene().getWindow(); stage.sizeToScene();
+			 * }); });
+			 */
 		}
 
 		return alert.showAndWait();
 	}
-	
+
 	private File openFileChooser(String title, boolean open) {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle(title);
 		fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-		fileChooser.getExtensionFilters().addAll(
-				new FileChooser.ExtensionFilter("BIN", "*.bin"),
-				new FileChooser.ExtensionFilter("Tots", "*.*")
-				);
+		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("BIN", "*.bin"),
+				new FileChooser.ExtensionFilter("Tots", "*.*"));
 		File file;
-		if (open) file = fileChooser.showOpenDialog(ResourceManager.getInstance().getStage());
-		else file = fileChooser.showSaveDialog(ResourceManager.getInstance().getStage());
+		if (open) {
+			file = fileChooser.showOpenDialog(ResourceManager.getInstance().getStage());
+		} else {
+			file = fileChooser.showSaveDialog(ResourceManager.getInstance().getStage());
+		}
 		return file;
 	}
 }

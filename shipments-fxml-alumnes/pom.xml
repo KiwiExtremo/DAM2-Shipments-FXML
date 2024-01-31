@@ -126,10 +126,9 @@
 			<version>3.1.0</version>
 		</dependency>-->
 		<dependency>
-			<groupId>cat.institutmarianao</groupId>
-			<artifactId>shipmentsws-alumnes</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<scope>compile</scope>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
 		</dependency>
     </dependencies>
     <build>

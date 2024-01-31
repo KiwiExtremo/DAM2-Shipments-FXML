@@ -12,9 +12,9 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import cat.institutmarianao.shipmentsws.model.User;
-import cat.institutmarianao.shipmentsws.model.User.Role;
 import ins.marianao.shipments.fxml.manager.ResourceManager;
+import ins.marianao.shipments.fxml.model.User;
+import ins.marianao.shipments.fxml.model.User.Role;
 
 public class ServiceQueryUsers extends ServiceQueryBase<User> {
 
@@ -32,38 +32,45 @@ public class ServiceQueryUsers extends ServiceQueryBase<User> {
 	protected List<User> customCall() throws Exception {
 		Client client = ResourceManager.getInstance().getWebClient();
 
-		WebTarget webTarget = client.target(ResourceManager.getInstance().getParam("web.service.host.url")).path(PATH_REST_USERS).path(PATH_QUERY_ALL);
-		
+		WebTarget webTarget = client.target(ResourceManager.getInstance().getParam("web.service.host.url"))
+				.path(PATH_REST_USERS).path(PATH_QUERY_ALL);
+
 		if (this.roles != null) {
 			for (Role role : roles) {
 				webTarget = webTarget.queryParam("roles", role.name());
 			}
 		}
-				
-		if (this.fullName != null && !this.fullName.isBlank()) webTarget = webTarget.queryParam("fullName", fullName);
 
-		Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_JSON);
+		if (this.fullName != null && !this.fullName.isBlank()) {
+			webTarget = webTarget.queryParam("fullName", fullName);
+		}
+
+		Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
 
 		List<User> users = new LinkedList<User>();
 		try {
 			Response response = invocationBuilder.get();
 
-			if (response.getStatus() != Response.Status.OK.getStatusCode()) 
+			if (response.getStatus() != Response.Status.OK.getStatusCode()) {
 				throw new Exception(ResourceManager.getInstance().responseErrorToString(response));
+			}
 
-			users = response.readEntity(new GenericType<List<User>>(){});
-			
+			users = response.readEntity(new GenericType<List<User>>() {
+			});
+
 		} catch (ResponseProcessingException e) {
 			e.printStackTrace();
-			throw new Exception(ResourceManager.getInstance().getText("error.service.response.processing")+" "+e.getMessage());
+			throw new Exception(
+					ResourceManager.getInstance().getText("error.service.response.processing") + " " + e.getMessage());
 		} catch (ProcessingException e) {
 			e.printStackTrace();
-			throw new Exception(ResourceManager.getInstance().getText("error.service.processing")+" "+e.getMessage());
+			throw new Exception(
+					ResourceManager.getInstance().getText("error.service.processing") + " " + e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		}
-		
+
 		return users;
 	}
 }
