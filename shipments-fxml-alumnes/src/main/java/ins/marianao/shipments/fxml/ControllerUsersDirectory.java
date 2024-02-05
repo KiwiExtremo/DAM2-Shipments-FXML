@@ -13,7 +13,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import ins.marianao.shipments.fxml.manager.ResourceManager;
 import ins.marianao.shipments.fxml.model.LogisticsManager;
 import ins.marianao.shipments.fxml.model.User;
-import ins.marianao.shipments.fxml.model.User.Role;
+import ins.marianao.shipments.fxml.model.User.Long;
 import ins.marianao.shipments.fxml.services.ServiceDeleteUser;
 import ins.marianao.shipments.fxml.services.ServiceQueryUsers;
 import ins.marianao.shipments.fxml.services.ServiceSaveUser;
@@ -81,10 +81,10 @@ public class ControllerUsersDirectory extends AbstractControllerPDF {
 			}
 		});
 
-		List<Pair<String, String>> roles = Stream.of(User.Role.values())
-				.map(new Function<Role, Pair<String, String>>() {
+		List<Pair<String, String>> roles = Stream.of(User.Long.values())
+				.map(new Function<Long, Pair<String, String>>() {
 					@Override
-					public Pair<String, String> apply(Role t) {
+					public Pair<String, String> apply(Long t) {
 						String key = t.name();
 						return new Pair<String, String>(key, resource.getString("text.User." + key));
 					}
@@ -289,14 +289,14 @@ public class ControllerUsersDirectory extends AbstractControllerPDF {
 	}
 
 	private void reloadUsers() {
-		Role[] roles = null;
+		Long[] roles = null;
 		Pair<String, String> role = this.cmbRole.getValue();
 		String search = this.txtFullnameSearch.getText();
 
 		this.usersTable.setEditable(false);
 
 		if (role != null) {
-			roles = new Role[] { Role.valueOf(role.getKey()) };
+			roles = new Long[] { Long.valueOf(role.getKey()) };
 		}
 
 		final ServiceQueryUsers queryUsers = new ServiceQueryUsers(roles, search);

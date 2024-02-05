@@ -13,6 +13,8 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang3.StringUtils;
 
 import ins.marianao.shipments.fxml.manager.ResourceManager;
+import ins.marianao.shipments.fxml.model.Company;
+import ins.marianao.shipments.fxml.model.Office;
 import ins.marianao.shipments.fxml.model.User;
 import javafx.util.Pair;
 import javafx.util.StringConverter;
@@ -21,6 +23,41 @@ public class Formatters {
 	public static final int CC_NUM_SIZE = 16;
 	public static final int EXT_NUM_SIZE = 4;
 	public static final int CP_NUM_SIZE = 5;
+
+	public static StringConverter<Company> getCompanyConverter() {
+
+		StringConverter<Company> converter = new StringConverter<Company>() {
+			@Override
+			public String toString(Company company) {
+				return company == null ? "" : company.getName();
+			}
+
+			// Unnecessary
+			@Override
+			public Company fromString(String string) {
+				return null;
+			}
+
+		};
+		return converter;
+	}
+
+	public static StringConverter<Office> getOfficeConverter() {
+
+		StringConverter<Office> converter = new StringConverter<Office>() {
+			@Override
+			public String toString(Office office) {
+				return office == null ? "" : office.getName();
+			}
+
+			// Unnecessary
+			@Override
+			public Office fromString(String string) {
+				return null;
+			}
+		};
+		return converter;
+	}
 
 	public static StringConverter<User> getGenericUserConverter() {
 

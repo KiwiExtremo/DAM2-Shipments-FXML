@@ -16,11 +16,14 @@ import ins.marianao.shipments.fxml.model.LogisticsManager;
 import ins.marianao.shipments.fxml.model.Office;
 import ins.marianao.shipments.fxml.model.Receptionist;
 import ins.marianao.shipments.fxml.model.User;
-import ins.marianao.shipments.fxml.model.User.Role;
+import ins.marianao.shipments.fxml.model.User.Long;
+import ins.marianao.shipments.fxml.services.ServiceQueryCompanies;
+import ins.marianao.shipments.fxml.services.ServiceQueryOffices;
 import ins.marianao.shipments.fxml.services.ServiceSaveUser;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -86,10 +89,10 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 
 		this.txtExtension.setTextFormatter(new TextFormatter<Integer>(Formatters.getExtensioFormatter(), 0));
 
-		List<Pair<String, String>> roles = Stream.of(User.Role.values())
-				.map(new Function<Role, Pair<String, String>>() {
+		List<Pair<String, String>> roles = Stream.of(User.Long.values())
+				.map(new Function<Long, Pair<String, String>>() {
 					@Override
-					public Pair<String, String> apply(Role t) {
+					public Pair<String, String> apply(Long t) {
 						String key = t.name();
 						return new Pair<String, String>(key, resource.getString("text.User." + key));
 					}
@@ -116,6 +119,7 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 				Courier courier = (Courier) user;
 				Company company = courier.getCompany();
 
+				this.cmbCompany.setConverter(Formatters.getCompanyConverter());
 				this.cmbCompany.setValue(company);
 
 				this.enableCourierFields();
@@ -123,7 +127,9 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 				Receptionist receptionist = (Receptionist) user;
 				Office office = receptionist.getOffice();
 
+				this.cmbOffice.setConverter(Formatters.getOfficeConverter());
 				this.cmbOffice.setValue(office);
+
 				this.txtPlace.setText(receptionist.getPlace());
 
 				this.enableReceptinistFields();
@@ -134,7 +140,7 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 	public void enableEdition() {
 		this.edicio = true;
 
-		String key = User.Role.COURIER.name();
+		String key = User.Long.COURIER.name();
 		this.cmbRole.setValue(new Pair<String, String>(key, ResourceManager.getInstance().getText("text.User." + key)));
 
 		this.txtUsername.clear();
@@ -183,7 +189,7 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 	public void changed(ObservableValue<? extends Pair<String, String>> observable, Pair<String, String> oldValue,
 			Pair<String, String> newValue) {
 		if (observable.equals(this.cmbRole.valueProperty())) {
-			if (User.Role.COURIER.name().equals(newValue.getKey())) {
+			if (User.Long.COURIER.name().equals(newValue.getKey())) {
 				// Couriers
 				this.enableCourierFields();
 			} else {
@@ -231,18 +237,18 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 				saveUserProfile(user, false);
 			} else {
 
-				if (User.Role.COURIER.name().equals(role.getKey())) {
-					user = Courier.builder().username(strUsername).role(User.Role.COURIER).password(password)
+				if (User.Long.COURIER.name().equals(role.getKey())) {
+					user = Courier.builder().username(strUsername).role(User.Long.COURIER).password(password)
 							.fullName(strFullName).extension(numExt).company(company).build();
 				}
 
-				if (User.Role.RECEPTIONIST.name().equals(role.getKey())) {
-					user = Receptionist.builder().username(strUsername).role(User.Role.RECEPTIONIST).password(password)
+				if (User.Long.RECEPTIONIST.name().equals(role.getKey())) {
+					user = Receptionist.builder().username(strUsername).role(User.Long.RECEPTIONIST).password(password)
 							.fullName(strFullName).extension(numExt).office(office).place(strPlace).build();
 				}
 
-				if (User.Role.LOGISTICS_MANAGER.name().equals(role.getKey())) {
-					user = LogisticsManager.builder().username(strUsername).role(User.Role.RECEPTIONIST)
+				if (User.Long.LOGISTICS_MANAGER.name().equals(role.getKey())) {
+					user = LogisticsManager.builder().username(strUsername).role(User.Long.RECEPTIONIST)
 							.password(password).fullName(strFullName).extension(numExt).office(office).place(strPlace)
 							.build();
 				}
@@ -308,12 +314,67 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 	}
 
 	protected void loadOffices(ComboBox<Office> combo) {
-		// TODO query offices and set combo items
+		final ServiceQueryOffices queryOffices = new ServiceQueryOffices();
+
+		queryOffices.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
+			@Override
+			public void handle(WorkerStateEvent t) {
+				combo.setEditable(true);
+
+				combo.getItems().clear();
+
+				ObservableList<Office> offices = FXCollections.observableArrayList(queryOffices.getValue());
+
+				combo.setItems(offices);
+			}
+		});
+
+		queryOffices.setOnFailed(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent t) {
+				combo.setEditable(true);
+
+				Throwable e = t.getSource().getException();
+
+				ControllerMenu.showError(ResourceManager.getInstance().getText("error.viewOffices.web.service"),
+						e.getMessage(), ExceptionUtils.getStackTrace(e));
+			}
+		});
+
 		return;
 	}
 
 	protected void loadCompanies(ComboBox<Company> combo) {
-		// TODO query companies and set combo items
+
+		final ServiceQueryCompanies queryCompanies = new ServiceQueryCompanies();
+
+		queryCompanies.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
+			@Override
+			public void handle(WorkerStateEvent t) {
+				combo.setEditable(true);
+
+				combo.getItems().clear();
+
+				ObservableList<Company> companies = FXCollections.observableArrayList(queryCompanies.getValue());
+
+				combo.setItems(companies);
+			}
+		});
+
+		queryCompanies.setOnFailed(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent t) {
+				combo.setEditable(true);
+
+				Throwable e = t.getSource().getException();
+
+				ControllerMenu.showError(ResourceManager.getInstance().getText("error.viewCompanies.web.service"),
+						e.getMessage(), ExceptionUtils.getStackTrace(e));
+			}
+		});
+
 		return;
 	}
 }
