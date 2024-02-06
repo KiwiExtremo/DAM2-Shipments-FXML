@@ -342,7 +342,7 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 			}
 		});
 
-		return;
+		queryOffices.start();
 	}
 
 	protected void loadCompanies(ComboBox<Company> combo) {
@@ -375,6 +375,6 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 			}
 		});
 
-		return;
+		queryCompanies.start();
 	}
 }

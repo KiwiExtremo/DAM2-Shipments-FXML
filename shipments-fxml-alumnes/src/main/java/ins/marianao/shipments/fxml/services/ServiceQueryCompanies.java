@@ -28,7 +28,7 @@ public class ServiceQueryCompanies extends ServiceQueryBase<Company> {
 
 		Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
 
-		List<Company> offices = new LinkedList<Company>();
+		List<Company> companies = new LinkedList<Company>();
 		try {
 			Response response = invocationBuilder.get();
 
@@ -36,7 +36,7 @@ public class ServiceQueryCompanies extends ServiceQueryBase<Company> {
 				throw new Exception(ResourceManager.getInstance().responseErrorToString(response));
 			}
 
-			offices = response.readEntity(new GenericType<List<Company>>() {
+			companies = response.readEntity(new GenericType<List<Company>>() {
 			});
 
 		} catch (ResponseProcessingException e) {
@@ -52,6 +52,6 @@ public class ServiceQueryCompanies extends ServiceQueryBase<Company> {
 			throw e;
 		}
 
-		return offices;
+		return companies;
 	}
 }

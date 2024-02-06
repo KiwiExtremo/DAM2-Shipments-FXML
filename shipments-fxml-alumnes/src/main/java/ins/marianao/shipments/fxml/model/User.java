@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.springframework.lang.NonNull;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -56,7 +57,7 @@ public abstract class User implements Serializable {
 	/* JSON */
 	// @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // Not present in
 	// generated JSON
-
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	protected String password;
 
 	/* Validation */
