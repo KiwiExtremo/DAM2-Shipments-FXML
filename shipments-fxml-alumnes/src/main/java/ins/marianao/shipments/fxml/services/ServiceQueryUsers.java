@@ -20,6 +20,7 @@ public class ServiceQueryUsers extends ServiceQueryBase<User> {
 
 	public static final String PATH_REST_USERS = "users";
 
+
 	private Role[] roles;
 	private String fullName;
 
