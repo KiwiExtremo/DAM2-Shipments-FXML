@@ -80,8 +80,10 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 		this.edicio = false;
 
 		this.loadOffices(cmbOffice);
-
 		this.loadCompanies(cmbCompany);
+
+		this.cmbCompany.setConverter(Formatters.getCompanyConverter());
+		this.cmbOffice.setConverter(Formatters.getOfficeConverter());
 
 		// this.lblUsuari.setText("\u2386");
 		// this.lblNom.setText("\u1F604");
@@ -119,7 +121,6 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 				Courier courier = (Courier) user;
 				Company company = courier.getCompany();
 
-				this.cmbCompany.setConverter(Formatters.getCompanyConverter());
 				this.cmbCompany.setValue(company);
 
 				this.enableCourierFields();
@@ -127,7 +128,6 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 				Receptionist receptionist = (Receptionist) user;
 				Office office = receptionist.getOffice();
 
-				this.cmbOffice.setConverter(Formatters.getOfficeConverter());
 				this.cmbOffice.setValue(office);
 
 				this.txtPlace.setText(receptionist.getPlace());
