@@ -10,9 +10,9 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 //import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 
 import ins.marianao.shipments.fxml.manager.ResourceManager;
+import ins.marianao.shipments.fxml.model.Address;
 //import ins.marianao.shipments.fxml.model.LogisticsManager;
 import ins.marianao.shipments.fxml.model.Shipment;
-
 //import ins.marianao.shipments.fxml.services.ServiceDeleteUser;
 import ins.marianao.shipments.fxml.services.ServiceQueryShipments;
 //import ins.marianao.shipments.fxml.services.ServiceSaveUser;
@@ -33,8 +33,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
 
-
-
 public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 	@FXML
 	private BorderPane viewUsersDirectory;
@@ -47,15 +45,17 @@ public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 	@FXML
 	private TableColumn<Shipment, Number> colId;
 	@FXML
-	private TableColumn<Shipment, String> colSender;
+	private TableColumn<Shipment, Address> colSender;
 	@FXML
-	private TableColumn<Shipment, String> colRecipient;
+	private TableColumn<Shipment, Address> colRecipient;
+	@FXML
+	private TableColumn<Shipment, String> colSize;
 	@FXML
 	private TableColumn<Shipment, Integer> colWeight;
 	@FXML
-	private TableColumn<Shipment, Integer> colHeigth;
+	private TableColumn<Shipment, Integer> colHeight;
 	@FXML
-	private TableColumn<Shipment, String> colWhidth;
+	private TableColumn<Shipment, String> colWidth;
 	@FXML
 	private TableColumn<Shipment, String> colLength;
 	@FXML
@@ -77,146 +77,163 @@ public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 				reloadShipments();
 			}
 		});
+
 		this.colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-		this.colSender.setCellValueFactory(new PropertyValueFactory<Shipment, String>("sender"));
-		this.colRecipient.setCellValueFactory(new PropertyValueFactory<Shipment, String>("recipient"));
+		this.colSender.setCellValueFactory(new PropertyValueFactory<Shipment, Address>("sender"));
+		this.colSender.setCellFactory(TextFieldTableCell.forTableColumn(Formatters.getSenderConverter()));
+
+		this.colRecipient.setCellValueFactory(new PropertyValueFactory<Shipment, Address>("recipient"));
+		this.colRecipient.setCellFactory(TextFieldTableCell.forTableColumn(Formatters.getRecipientConverter()));
+
 		this.colWeight.setCellValueFactory(new PropertyValueFactory<Shipment, Integer>("weight"));
-		this.colHeigth.setCellValueFactory(new PropertyValueFactory<Shipment, Integer>("height"));
-		this.colWhidth.setCellValueFactory(new PropertyValueFactory<Shipment, String>("width"));
-		this.colLength.setCellValueFactory(new PropertyValueFactory<Shipment, String>("length"));
+
+		this.colSize.setCellValueFactory(new PropertyValueFactory<Shipment, String>("dimensions"));
+
 		this.colExpress.setCellValueFactory(new PropertyValueFactory<Shipment, Boolean>("express"));
 		this.colFragile.setCellValueFactory(new PropertyValueFactory<Shipment, Boolean>("fragile"));
 
 		this.reloadShipments();
-		//HAY QUE MODIFICAR VISTA SEGUN USUARIO
+		// HAY QUE MODIFICAR VISTA SEGUN USUARIO
 
-		//        this.shipmentsTable.setEditable(true);
-		//        this.shipmentsTable.getSelectionModel().setCellSelectionEnabled(true);
-		//        this.shipmentsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		// this.shipmentsTable.setEditable(true);
+		// this.shipmentsTable.getSelectionModel().setCellSelectionEnabled(true);
+		// this.shipmentsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		//
-		//        this.colId.setMinWidth(40);
-		//        this.colId.setMaxWidth(60);
-		//        this.colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+		// this.colId.setMinWidth(40);
+		// this.colId.setMaxWidth(60);
+		// this.colId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		//
-		//        this.colSender.setMinWidth(100);
-		//        this.colSender.setMaxWidth(160);
-		//        this.colSender.setCellValueFactory(new PropertyValueFactory<Shipment, String>("sender"));
-		//        this.colSender.setCellFactory(TextFieldTableCell.forTableColumn());
-		//        this.colSender.setEditable(false);
+		// this.colSender.setMinWidth(100);
+		// this.colSender.setMaxWidth(160);
+		// this.colSender.setCellValueFactory(new PropertyValueFactory<Shipment,
+		// String>("sender"));
+		// this.colSender.setCellFactory(TextFieldTableCell.forTableColumn());
+		// this.colSender.setEditable(false);
 		//
-		//        this.colRecipient.setMinWidth(200);
-		//        this.colRecipient.setMaxWidth(260);
-		//        this.colRecipient.setCellValueFactory(new PropertyValueFactory<Shipment, String>("recipient"));
-		//        this.colRecipient.setCellFactory(TextFieldTableCell.forTableColumn());
-		//        this.colRecipient.setEditable(false);
-		//        
-		//        this.colWeight.setMinWidth(50);
-		//        this.colWeight.setMaxWidth(50);
-		//        this.colWeight.setCellValueFactory(new PropertyValueFactory<Shipment, Integer>("weight"));
-		//        this.colWeight.setEditable(false);
+		// this.colRecipient.setMinWidth(200);
+		// this.colRecipient.setMaxWidth(260);
+		// this.colRecipient.setCellValueFactory(new PropertyValueFactory<Shipment,
+		// String>("recipient"));
+		// this.colRecipient.setCellFactory(TextFieldTableCell.forTableColumn());
+		// this.colRecipient.setEditable(false);
 		//
-		//        this.colHeigth.setMinWidth(50);
-		//        this.colHeigth.setMaxWidth(50);
-		//        this.colHeigth.setCellValueFactory(new PropertyValueFactory<Shipment, Integer>("height"));
-		//        this.colHeigth.setEditable(false);
-		//        
-		//        this.colLength.setMinWidth(50);
-		//        this.colLength.setMaxWidth(50);
-		//        this.colLength.setCellValueFactory(new PropertyValueFactory<Shipment, String>("length"));
-		//        this.colLength.setCellFactory(TextFieldTableCell.forTableColumn());
-		//        this.colLength.setEditable(false);
-		//        
-		//        this.colExpress.setMinWidth(50);
-		//        this.colExpress.setMaxWidth(50);
-		//        this.colExpress.setCellValueFactory(new PropertyValueFactory<Shipment, Boolean>("express"));
+		// this.colWeight.setMinWidth(50);
+		// this.colWeight.setMaxWidth(50);
+		// this.colWeight.setCellValueFactory(new PropertyValueFactory<Shipment,
+		// Integer>("weight"));
+		// this.colWeight.setEditable(false);
 		//
-		//        this.colFragile.setMinWidth(50);
-		//        this.colFragile.setMaxWidth(50);
-		//        this.colFragile.setCellValueFactory(new PropertyValueFactory<Shipment, Boolean>("fragile"));
+		// this.colHeigth.setMinWidth(50);
+		// this.colHeigth.setMaxWidth(50);
+		// this.colHeigth.setCellValueFactory(new PropertyValueFactory<Shipment,
+		// Integer>("height"));
+		// this.colHeigth.setEditable(false);
+		//
+		// this.colLength.setMinWidth(50);
+		// this.colLength.setMaxWidth(50);
+		// this.colLength.setCellValueFactory(new PropertyValueFactory<Shipment,
+		// String>("length"));
+		// this.colLength.setCellFactory(TextFieldTableCell.forTableColumn());
+		// this.colLength.setEditable(false);
+		//
+		// this.colExpress.setMinWidth(50);
+		// this.colExpress.setMaxWidth(50);
+		// this.colExpress.setCellValueFactory(new PropertyValueFactory<Shipment,
+		// Boolean>("express"));
+		//
+		// this.colFragile.setMinWidth(50);
+		// this.colFragile.setMaxWidth(50);
+		// this.colFragile.setCellValueFactory(new PropertyValueFactory<Shipment,
+		// Boolean>("fragile"));
 
-		//        User user = ResourceManager.getInstance().getCurrentUser();
+		// User user = ResourceManager.getInstance().getCurrentUser();
 
-		//        if (!(user instanceof LogisticsManager)) {
-		//            this.colFragile.setVisible(false);
-		//            this.colFragile.setMinWidth(0);
-		//            this.colFragile.setMaxWidth(0);
-		//        } else {
-		//            this.colFragile.setMinWidth(50);
-		//            this.colFragile.setMaxWidth(70);
-		//            this.colFragile.setCellValueFactory(
-		//                    new Callback<TableColumn.CellDataFeatures<Shipment, Boolean>, ObservableValue<Boolean>>() {
-		//                        @Override
-		//                        public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Shipment, Boolean> cell) {
-		//                            return new SimpleBooleanProperty(false);
-		//                        }
-		//                    });
+		// if (!(user instanceof LogisticsManager)) {
+		// this.colFragile.setVisible(false);
+		// this.colFragile.setMinWidth(0);
+		// this.colFragile.setMaxWidth(0);
+		// } else {
+		// this.colFragile.setMinWidth(50);
+		// this.colFragile.setMaxWidth(70);
+		// this.colFragile.setCellValueFactory(
+		// new Callback<TableColumn.CellDataFeatures<Shipment, Boolean>,
+		// ObservableValue<Boolean>>() {
+		// @Override
+		// public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Shipment,
+		// Boolean> cell) {
+		// return new SimpleBooleanProperty(false);
+		// }
+		// });
 		//
-		//            this.colFragile.setCellFactory(new ColumnButton<Shipment, Boolean>(
-		//                    ResourceManager.getInstance().getText("fxml.text.viewShipments.col.fragile"),
-		//                    new Image(getClass().getResourceAsStream("resources/recycle-bin.png"))) {
-		//                @Override
-		//                public void buttonAction(Shipment shipment) {
-		//                    try {
-		//                        boolean result = ControllerMenu.showConfirm(
-		//                                ResourceManager.getInstance().getText("fxml.text.viewShipments.fragile.title"),
-		//                                ResourceManager.getInstance().getText("fxml.text.viewShipments.fragile.text"));
-		////                        if (result) {
-		////                            deleteShipment(shipment);
-		////                        }
-		//                    } catch (Exception e) {
-		//                        ControllerMenu.showError(ResourceManager.getInstance().getText("error.viewShipments.delete"),
-		//                                e.getMessage(), ExceptionUtils.getStackTrace(e));
-		//                    }
-		//                }
-		//            });
-		//        }
+		// this.colFragile.setCellFactory(new ColumnButton<Shipment, Boolean>(
+		// ResourceManager.getInstance().getText("fxml.text.viewShipments.col.fragile"),
+		// new Image(getClass().getResourceAsStream("resources/recycle-bin.png"))) {
+		// @Override
+		// public void buttonAction(Shipment shipment) {
+		// try {
+		// boolean result = ControllerMenu.showConfirm(
+		// ResourceManager.getInstance().getText("fxml.text.viewShipments.fragile.title"),
+		// ResourceManager.getInstance().getText("fxml.text.viewShipments.fragile.text"));
+		//// if (result) {
+		//// deleteShipment(shipment);
+		//// }
+		// } catch (Exception e) {
+		// ControllerMenu.showError(ResourceManager.getInstance().getText("error.viewShipments.delete"),
+		// e.getMessage(), ExceptionUtils.getStackTrace(e));
+		// }
+		// }
+		// });
+		// }
 	}
 
-	//    private void deleteShipment(Shipment shipment) throws Exception {
-	//        final ServiceDeleteShipment deleteShipment = new ServiceDeleteShipment(shipment);
+	// private void deleteShipment(Shipment shipment) throws Exception {
+	// final ServiceDeleteShipment deleteShipment = new
+	// ServiceDeleteShipment(shipment);
 	//
-	//        deleteShipment.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-	//            @Override
-	//            public void handle(WorkerStateEvent t) {
-	//                reloadShipments();
-	//            }
-	//        });
+	// deleteShipment.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+	// @Override
+	// public void handle(WorkerStateEvent t) {
+	// reloadShipments();
+	// }
+	// });
 	//
-	//        deleteShipment.setOnFailed(new EventHandler<WorkerStateEvent>() {
-	//            @Override
-	//            public void handle(WorkerStateEvent t) {
-	//                Throwable e = t.getSource().getException();
+	// deleteShipment.setOnFailed(new EventHandler<WorkerStateEvent>() {
+	// @Override
+	// public void handle(WorkerStateEvent t) {
+	// Throwable e = t.getSource().getException();
 	//
-	//                ControllerMenu.showError(ResourceManager.getInstance().getText("error.viewShipments.delete.web.service"),
-	//                        e.getMessage(), ExceptionUtils.getStackTrace(e));
-	//            }
-	//        });
+	// ControllerMenu.showError(ResourceManager.getInstance().getText("error.viewShipments.delete.web.service"),
+	// e.getMessage(), ExceptionUtils.getStackTrace(e));
+	// }
+	// });
 	//
-	//        deleteShipment.start();
-	//    }
+	// deleteShipment.start();
+	// }
 
-	//    private void saveShipment(Shipment shipment, boolean insert) throws Exception {
-	//        final ServiceSaveShipment saveShipment = new ServiceSaveShipment(shipment, insert);
+	// private void saveShipment(Shipment shipment, boolean insert) throws Exception
+	// {
+	// final ServiceSaveShipment saveShipment = new ServiceSaveShipment(shipment,
+	// insert);
 	//
-	//        saveShipment.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-	//            @Override
-	//            public void handle(WorkerStateEvent t) {
-	//                // Refresh table or do other actions after successful save
-	//            }
-	//        });
+	// saveShipment.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+	// @Override
+	// public void handle(WorkerStateEvent t) {
+	// // Refresh table or do other actions after successful save
+	// }
+	// });
 	//
-	//        saveShipment.setOnFailed(new EventHandler<WorkerStateEvent>() {
-	//            @Override
-	//            public void handle(WorkerStateEvent t) {
-	//                Throwable e = t.getSource().getException();
+	// saveShipment.setOnFailed(new EventHandler<WorkerStateEvent>() {
+	// @Override
+	// public void handle(WorkerStateEvent t) {
+	// Throwable e = t.getSource().getException();
 	//
-	//                ControllerMenu.showError(ResourceManager.getInstance().getText("error.viewShipments.save.web.service"),
-	//                        e.getMessage(), ExceptionUtils.getStackTrace(e));
-	//            }
-	//        });
+	// ControllerMenu.showError(ResourceManager.getInstance().getText("error.viewShipments.save.web.service"),
+	// e.getMessage(), ExceptionUtils.getStackTrace(e));
+	// }
+	// });
 	//
-	//        saveShipment.start();
-	//    }
+	// saveShipment.start();
+	// }
 
 	private void reloadShipments() {
 		this.shipmentsTable.setEditable(false);
@@ -231,7 +248,6 @@ public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 				populateTable(shipments);
 				System.out.println(shipments.size());
 			}
-
 
 		});
 
@@ -256,19 +272,21 @@ public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 		shipmentsTable.setItems(shipmentList);
 	}
 
-	//    @Override
-	//    protected String htmlContentToPDF() {
-	//        List<Shipment> shipments = this.shipmentsTable.getItems();
-	//        String search = this.txtFullnameSearch.getText();
+	// @Override
+	// protected String htmlContentToPDF() {
+	// List<Shipment> shipments = this.shipmentsTable.getItems();
+	// String search = this.txtFullnameSearch.getText();
 	//
-	//        List<Pair<String, String>> filters = new LinkedList<>();
-	//        if (search != null && !search.isBlank()) {
-	//            filters.add(new Pair<>(ResourceManager.getInstance().getText("fxml.text.viewShipments.search.prompt"),
-	//                    "\"" + search + "\""));
-	//        }
+	// List<Pair<String, String>> filters = new LinkedList<>();
+	// if (search != null && !search.isBlank()) {
+	// filters.add(new
+	// Pair<>(ResourceManager.getInstance().getText("fxml.text.viewShipments.search.prompt"),
+	// "\"" + search + "\""));
+	// }
 	//
-	//        return "<pre>" + ResourceManager.getInstance().shipmentsHtml(shipments, filters) + "</pre>";
-	//    }
+	// return "<pre>" + ResourceManager.getInstance().shipmentsHtml(shipments,
+	// filters) + "</pre>";
+	// }
 
 	@Override
 	protected String documentTitle() {
@@ -286,21 +304,25 @@ public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 		return null;
 	}
 
-	//	@Override
-	//	protected String htmlContentToPDF() throws Exception {
-	//		List<Shipment> shimpent = this.shipmentsTable.getItems();
-	//		Pair<String, String> role = this.cmbRole.getValue();
-	//		String search = this.txtFullnameSearch.getText();
+	// @Override
+	// protected String htmlContentToPDF() throws Exception {
+	// List<Shipment> shimpent = this.shipmentsTable.getItems();
+	// Pair<String, String> role = this.cmbRole.getValue();
+	// String search = this.txtFullnameSearch.getText();
 	//
-	//		List<Pair<String, String>> filters = new LinkedList<>();
-	//		if (role != null) {
-	//			filters.add(new Pair<>(ResourceManager.getInstance().getText("fxml.text.viewUsers.role"), role.getValue()));
-	//		}
-	//		if (search != null && !search.isBlank()) {
-	//			filters.add(new Pair<>(ResourceManager.getInstance().getText("fxml.text.viewUsers.search.prompt"),
-	//					"\"" + search + "\""));
-	//		}
+	// List<Pair<String, String>> filters = new LinkedList<>();
+	// if (role != null) {
+	// filters.add(new
+	// Pair<>(ResourceManager.getInstance().getText("fxml.text.viewUsers.role"),
+	// role.getValue()));
+	// }
+	// if (search != null && !search.isBlank()) {
+	// filters.add(new
+	// Pair<>(ResourceManager.getInstance().getText("fxml.text.viewUsers.search.prompt"),
+	// "\"" + search + "\""));
+	// }
 	//
-	//		return "<pre>" + ResourceManager.getInstance().usersDirectoryHtml(users, filters) + "</pre>";
-	//	}
+	// return "<pre>" + ResourceManager.getInstance().usersDirectoryHtml(users,
+	// filters) + "</pre>";
+	// }
 }
