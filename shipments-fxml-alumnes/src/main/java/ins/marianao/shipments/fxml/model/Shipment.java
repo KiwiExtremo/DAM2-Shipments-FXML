@@ -147,9 +147,8 @@ public class Shipment implements Serializable {
 
 	public String getDimensions() {
 		// HxWxL
-		return (this.height != null ? this.height + "" : "N/A") + System.lineSeparator()
-				+ (this.width != null ? this.width + "" : "N/A") + System.lineSeparator()
-				+ (this.length != null ? this.length + "" : "N/A");
+		return (this.height != null ? this.height : "N/A") + " x " + (this.width != null ? this.width : "N/A") + " x "
+				+ (this.length != null ? this.length : "N/A");
 	}
 
 }

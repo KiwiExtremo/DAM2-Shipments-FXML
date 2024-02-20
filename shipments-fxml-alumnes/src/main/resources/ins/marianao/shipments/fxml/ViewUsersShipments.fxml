@@ -62,10 +62,8 @@
 						<TableColumn fx:id="colId" editable="false" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.id" />
 						<TableColumn fx:id="colSender" editable="false" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.sender" />
 						<TableColumn fx:id="colRecipient" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.recipient" />
+						<TableColumn fx:id="colSize" prefWidth="75.0" styleClass="col-left" text="%fxml.text.formShipment.shipment.size" />
 						<TableColumn fx:id="colWeight" prefWidth="75.0" styleClass="col-left" text="%fxml.text.formShipment.shipment.weight" />
-						<TableColumn fx:id="colHeigth" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.height" />
-						<TableColumn fx:id="colWhidth" editable="false" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.width" />
-						<TableColumn fx:id="colLength" editable="false" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.length" />
 						<TableColumn fx:id="colExpress" editable="false" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.express" />
 						<TableColumn fx:id="colFragile" editable="false" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.fragile" />
 					</columns>
