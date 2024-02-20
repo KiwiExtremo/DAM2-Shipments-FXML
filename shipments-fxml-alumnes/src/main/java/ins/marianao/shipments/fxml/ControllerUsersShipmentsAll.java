@@ -62,6 +62,8 @@ public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 	private TableColumn<Shipment, Boolean> colExpress;
 	@FXML
 	private TableColumn<Shipment, Boolean> colFragile;
+	@FXML
+	private TableColumn<Shipment, String> colStatus;
 
 	/**
 	 * Initializes the controller class.
@@ -86,6 +88,7 @@ public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 		this.colLength.setCellValueFactory(new PropertyValueFactory<Shipment, String>("length"));
 		this.colExpress.setCellValueFactory(new PropertyValueFactory<Shipment, Boolean>("express"));
 		this.colFragile.setCellValueFactory(new PropertyValueFactory<Shipment, Boolean>("fragile"));
+		this.colStatus.setCellValueFactory(new PropertyValueFactory<Shipment, String>("status"));
 
 		this.reloadShipments();
 		//HAY QUE MODIFICAR VISTA SEGUN USUARIO

@@ -68,6 +68,7 @@
 						<TableColumn fx:id="colLength" editable="false" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.length" />
 						<TableColumn fx:id="colExpress" editable="false" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.express" />
 						<TableColumn fx:id="colFragile" editable="false" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.fragile" />
+						<TableColumn fx:id="colStatus" editable="false" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.status" />
 					</columns>
 					<columnResizePolicy>
 						<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
