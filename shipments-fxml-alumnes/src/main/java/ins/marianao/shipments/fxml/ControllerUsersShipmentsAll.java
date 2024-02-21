@@ -1,10 +1,15 @@
 package ins.marianao.shipments.fxml;
 
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 //import java.util.LinkedList;
 //import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 //import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
@@ -13,6 +18,8 @@ import ins.marianao.shipments.fxml.manager.ResourceManager;
 import ins.marianao.shipments.fxml.model.Address;
 //import ins.marianao.shipments.fxml.model.LogisticsManager;
 import ins.marianao.shipments.fxml.model.Shipment;
+import ins.marianao.shipments.fxml.model.User;
+import ins.marianao.shipments.fxml.model.User.Role;
 //import ins.marianao.shipments.fxml.services.ServiceDeleteUser;
 import ins.marianao.shipments.fxml.services.ServiceQueryShipments;
 //import ins.marianao.shipments.fxml.services.ServiceSaveUser;
@@ -26,24 +33,31 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
+import javafx.util.Pair;
 
 public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 	@FXML
 	private BorderPane viewUsersDirectory;
-
 	@FXML
 	private TextField txtFullnameSearch;
-
+	@FXML
+    private ComboBox<Pair<String, String>> cmbStatus;
+    @FXML
+    private ComboBox<Pair<String, String>> cmbCategory;
 	@FXML
 	private TableView<Shipment> shipmentsTable;
+
 	@FXML
 	private TableColumn<Shipment, Number> colId;
+	@FXML
+	private TableColumn<Shipment, LocalDateTime> colDate;
 	@FXML
 	private TableColumn<Shipment, Address> colSender;
 	@FXML
@@ -73,14 +87,23 @@ public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 
 		super.initialize(url, resource);
 
-		this.txtFullnameSearch.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				reloadShipments();
-			}
-		});
+//		this.txtFullnameSearch.textProperty().addListener(new ChangeListener<String>() {
+//			@Override
+//			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+//				reloadShipments();
+//			}
+//		});
+
+		
+		setCombos(resource);
+
+		//setComboCategory(resource);
 
 		this.colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+		
+		this.colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+		this.colDate.setCellFactory(TextFieldTableCell.forTableColumn(Formatters.getDateFormatter()));
+		
 		this.colSender.setCellValueFactory(new PropertyValueFactory<Shipment, Address>("sender"));
 		this.colSender.setCellFactory(TextFieldTableCell.forTableColumn(Formatters.getSenderConverter()));
 
@@ -92,7 +115,9 @@ public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 		this.colSize.setCellValueFactory(new PropertyValueFactory<Shipment, String>("dimensions"));
 
 		this.colExpress.setCellValueFactory(new PropertyValueFactory<Shipment, Boolean>("express"));
+		
 		this.colFragile.setCellValueFactory(new PropertyValueFactory<Shipment, Boolean>("fragile"));
+		
 		this.colStatus.setCellValueFactory(new PropertyValueFactory<Shipment, String>("status"));
 
 		this.reloadShipments();
@@ -188,6 +213,44 @@ public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 		// });
 		// }
 	}
+
+
+
+	private void setCombos(ResourceBundle resource) {
+		List<Pair<String, String>> status = Arrays.stream(Shipment.Status.values())
+			    .map(s -> {
+			        String key = s.name();
+			        return new Pair<>(key, resource.getString("text.Status." + key));
+			    })
+			    .collect(Collectors.toList());
+
+			ObservableList<Pair<String, String>> listStatus = FXCollections.observableArrayList(status);
+//			listStatus.add(0, null);
+
+			this.cmbStatus.setItems(listStatus);
+			this.cmbStatus.setConverter(Formatters.getStringPairConverter("Status"));
+
+			this.cmbStatus.valueProperty().addListener((observable, oldValue, newValue) -> {
+			    reloadShipments();
+			});
+			List<Pair<String, String>> category = Arrays.stream(Shipment.Category.values())
+			        .map(c -> {
+			            String key = c.name();
+			            return new Pair<>(key, resource.getString("text.Category." + key));
+			        })
+			        .collect(Collectors.toList());
+
+			    ObservableList<Pair<String, String>> listCategory = FXCollections.observableArrayList(category);
+
+			    this.cmbCategory.setItems(listCategory);
+			    this.cmbCategory.setConverter(Formatters.getStringPairConverter("Category"));
+
+			    this.cmbCategory.valueProperty().addListener((observable, oldValue, newValue) -> {
+			        reloadShipments();
+			    });
+	}
+	
+	
 
 	// private void deleteShipment(Shipment shipment) throws Exception {
 	// final ServiceDeleteShipment deleteShipment = new

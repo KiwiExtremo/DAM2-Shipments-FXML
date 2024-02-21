@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -35,23 +33,19 @@
 					<children>
 						<HBox styleClass="input-group">
 							<children>
-								<Label prefHeight="20.0" prefWidth="61.0" text="%fxml.text.viewUsers.role" />
-								<ComboBox fx:id="cmbRole" maxWidth="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+								<Label prefHeight="20.0" prefWidth="61.0" text="%fxml.text.formShipment.shipment.status" />
+								<ComboBox fx:id="cmbStatus" maxWidth="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
 							</children>
 						</HBox>
-						<HBox styleClass="input-group" GridPane.columnIndex="1">
-							<children>
-								<Label text="%fxml.text.viewUsers.search">
-									<styleClass>
-										<String fx:value="label-large" />
-									</styleClass>
-								</Label>
-								<TextField fx:id="txtFullnameSearch" promptText="%fxml.text.viewUsers.search.prompt" HBox.hgrow="ALWAYS" />
-							</children>
+						<HBox prefHeight="0.0" prefWidth="560.0" styleClass="input-group" GridPane.columnIndex="1">
+                     <children>
+                        <Label prefHeight="20.0" prefWidth="61.0" text="%fxml.text.form.Shipments.shipment.category" />
+                        <ComboBox fx:id="cmbCategory" maxWidth="200.0" prefWidth="200.0" />
+                     </children>
 						</HBox>
 					</children>
 				</GridPane>
-				<Label layoutX="62.0" layoutY="14.0" styleClass="title" text="%fxml.text.viewUsers.title" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0" />
+				<Label layoutX="62.0" layoutY="14.0" styleClass="title" text="%fxml.text.menu.shipments.view" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0" />
 				<HBox spacing="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
 					<padding>
 						<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -60,6 +54,7 @@
 				<TableView fx:id="shipmentsTable" editable="true" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="160.0">
 					<columns>
 						<TableColumn fx:id="colId" editable="false" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.id" />
+                  <TableColumn fx:id="colDate" editable="false" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.date" />
 						<TableColumn fx:id="colSender" editable="false" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.sender" />
 						<TableColumn fx:id="colRecipient" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.recipient" />
 						<TableColumn fx:id="colSize" prefWidth="75.0" styleClass="col-left" text="%fxml.text.formShipment.shipment.size" />
