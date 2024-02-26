@@ -48,9 +48,9 @@ public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 	@FXML
 	private TextField txtFullnameSearch;
 	@FXML
-    private ComboBox<Pair<String, String>> cmbStatus;
-    @FXML
-    private ComboBox<Pair<String, String>> cmbCategory;
+	private ComboBox<Pair<String, String>> cmbStatus;
+	@FXML
+	private ComboBox<Pair<String, String>> cmbCategory;
 	@FXML
 	private TableView<Shipment> shipmentsTable;
 
@@ -100,26 +100,34 @@ public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 		//setComboCategory(resource);
 
 		this.colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+		this.colId.setMinWidth(50);
 		
 		this.colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
 		this.colDate.setCellFactory(TextFieldTableCell.forTableColumn(Formatters.getDateFormatter()));
+		this.colDate.setMinWidth(75);
 		
 		this.colSender.setCellValueFactory(new PropertyValueFactory<Shipment, Address>("sender"));
 		this.colSender.setCellFactory(TextFieldTableCell.forTableColumn(Formatters.getSenderConverter()));
-
+		this.colSender.setMinWidth(100);
+		
 		this.colRecipient.setCellValueFactory(new PropertyValueFactory<Shipment, Address>("recipient"));
 		this.colRecipient.setCellFactory(TextFieldTableCell.forTableColumn(Formatters.getRecipientConverter()));
+		this.colRecipient.setMinWidth(100);
 
 		this.colWeight.setCellValueFactory(new PropertyValueFactory<Shipment, Integer>("weight"));
-
+		this.colWeight.setMinWidth(75);
+		
 		this.colSize.setCellValueFactory(new PropertyValueFactory<Shipment, String>("dimensions"));
-
+		this.colSize.setMinWidth(75);
+		
 		this.colExpress.setCellValueFactory(new PropertyValueFactory<Shipment, Boolean>("express"));
+		this.colExpress.setMinWidth(50);
 		
 		this.colFragile.setCellValueFactory(new PropertyValueFactory<Shipment, Boolean>("fragile"));
+		this.colFragile.setMinWidth(50);
 		
 		this.colStatus.setCellValueFactory(new PropertyValueFactory<Shipment, String>("status"));
-
+		this.colStatus.setMinWidth(75);
 		this.reloadShipments();
 		// HAY QUE MODIFICAR VISTA SEGUN USUARIO
 
@@ -214,43 +222,35 @@ public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 		// }
 	}
 
-
-
 	private void setCombos(ResourceBundle resource) {
-		List<Pair<String, String>> status = Arrays.stream(Shipment.Status.values())
-			    .map(s -> {
-			        String key = s.name();
-			        return new Pair<>(key, resource.getString("text.Status." + key));
-			    })
-			    .collect(Collectors.toList());
+		List<Pair<String, String>> status = Arrays.stream(Shipment.Status.values()).map(s -> {
+			String key = s.name();
+			return new Pair<>(key, resource.getString("text.Status." + key));
+		}).collect(Collectors.toList());
 
-			ObservableList<Pair<String, String>> listStatus = FXCollections.observableArrayList(status);
+		ObservableList<Pair<String, String>> listStatus = FXCollections.observableArrayList(status);
 //			listStatus.add(0, null);
 
-			this.cmbStatus.setItems(listStatus);
-			this.cmbStatus.setConverter(Formatters.getStringPairConverter("Status"));
+		this.cmbStatus.setItems(listStatus);
+		this.cmbStatus.setConverter(Formatters.getStringPairConverter("Status"));
 
-			this.cmbStatus.valueProperty().addListener((observable, oldValue, newValue) -> {
-			    reloadShipments();
-			});
-			List<Pair<String, String>> category = Arrays.stream(Shipment.Category.values())
-			        .map(c -> {
-			            String key = c.name();
-			            return new Pair<>(key, resource.getString("text.Category." + key));
-			        })
-			        .collect(Collectors.toList());
+		this.cmbStatus.valueProperty().addListener((observable, oldValue, newValue) -> {
+			reloadShipments();
+		});
+		List<Pair<String, String>> category = Arrays.stream(Shipment.Category.values()).map(c -> {
+			String key = c.name();
+			return new Pair<>(key, resource.getString("text.Category." + key));
+		}).collect(Collectors.toList());
 
-			    ObservableList<Pair<String, String>> listCategory = FXCollections.observableArrayList(category);
+		ObservableList<Pair<String, String>> listCategory = FXCollections.observableArrayList(category);
 
-			    this.cmbCategory.setItems(listCategory);
-			    this.cmbCategory.setConverter(Formatters.getStringPairConverter("Category"));
+		this.cmbCategory.setItems(listCategory);
+		this.cmbCategory.setConverter(Formatters.getStringPairConverter("Category"));
 
-			    this.cmbCategory.valueProperty().addListener((observable, oldValue, newValue) -> {
-			        reloadShipments();
-			    });
+		this.cmbCategory.valueProperty().addListener((observable, oldValue, newValue) -> {
+			reloadShipments();
+		});
 	}
-	
-	
 
 	// private void deleteShipment(Shipment shipment) throws Exception {
 	// final ServiceDeleteShipment deleteShipment = new
