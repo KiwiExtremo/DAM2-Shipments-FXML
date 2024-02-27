@@ -14,14 +14,21 @@ import javax.ws.rs.core.Response;
 
 import ins.marianao.shipments.fxml.manager.ResourceManager;
 import ins.marianao.shipments.fxml.model.Shipment;
+import ins.marianao.shipments.fxml.model.Shipment.Category;
+import ins.marianao.shipments.fxml.model.Shipment.Status;
 
 public class ServiceQueryShipments extends ServiceQueryBase<Shipment> {
 
     public static final String PATH_REST_SHIPMENT = "shipments";
 
+	private Category[] category;
+    private Status[] status;
     
+    public ServiceQueryShipments(Status[] status, Category[] category) {
+    	this.status = status;
+		this.category = category;
     
-    public ServiceQueryShipments() {}
+    }
 
     @Override
     protected List<Shipment> customCall() throws Exception {
@@ -55,4 +62,6 @@ public class ServiceQueryShipments extends ServiceQueryBase<Shipment> {
 
         return shipments;
     }
+    
+    
 }

@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -41,29 +42,7 @@ public class Formatters {
 		};
 		return converter;
 	}
-	public static StringConverter<LocalDateTime> getDateFormatter() {
-	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-	    StringConverter<LocalDateTime> stringConverter = new StringConverter<LocalDateTime>() {
-	        @Override
-	        public LocalDateTime fromString(String string) {
-	            try {
-	                return LocalDateTime.parse(string, formatter);
-	            } catch (DateTimeParseException e) {
-	                e.printStackTrace();
-	            }
-				return null;
-	        }
-
-	        @Override
-	        public String toString(LocalDateTime object) {
-	            if (object == null) {
-	                return "N/F";
-	            }
-	            return object.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-	        }
-	    };
-	    return stringConverter;
-	}
+	
 	public static StringConverter<Shipment> getSizeConverter() {
 		StringConverter<Shipment> converter = new StringConverter<Shipment>() {
 			@Override

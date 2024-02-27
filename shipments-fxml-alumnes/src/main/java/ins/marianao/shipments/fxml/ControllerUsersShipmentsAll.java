@@ -1,8 +1,11 @@
 package ins.marianao.shipments.fxml;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 //import java.util.LinkedList;
 //import java.util.List;
@@ -15,6 +18,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 //import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 
 import ins.marianao.shipments.fxml.manager.ResourceManager;
+import ins.marianao.shipments.fxml.model.Action;
 import ins.marianao.shipments.fxml.model.Address;
 //import ins.marianao.shipments.fxml.model.LogisticsManager;
 import ins.marianao.shipments.fxml.model.Shipment;
@@ -22,6 +26,7 @@ import ins.marianao.shipments.fxml.model.User;
 import ins.marianao.shipments.fxml.model.User.Role;
 //import ins.marianao.shipments.fxml.services.ServiceDeleteUser;
 import ins.marianao.shipments.fxml.services.ServiceQueryShipments;
+import javafx.beans.property.SimpleStringProperty;
 //import ins.marianao.shipments.fxml.services.ServiceSaveUser;
 //import javafx.beans.property.SimpleBooleanProperty;
 //import javafx.beans.property.SimpleIntegerProperty;
@@ -40,6 +45,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
+import javafx.util.Callback;
 import javafx.util.Pair;
 
 public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
@@ -57,7 +63,9 @@ public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 	@FXML
 	private TableColumn<Shipment, Number> colId;
 	@FXML
-	private TableColumn<Shipment, LocalDateTime> colDate;
+	private TableColumn<Shipment, String> colCateg;
+	@FXML
+	private TableColumn<Shipment, String> colDate;
 	@FXML
 	private TableColumn<Shipment, Address> colSender;
 	@FXML
@@ -100,11 +108,21 @@ public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 		//setComboCategory(resource);
 
 		this.colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+		this.colId.setMinWidth(10);
+		this.colId.setMaxWidth(20);
+		
+		this.colCateg.setCellValueFactory(new PropertyValueFactory<Shipment, String>("category"));
 		this.colId.setMinWidth(50);
 		
-		this.colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
-		this.colDate.setCellFactory(TextFieldTableCell.forTableColumn(Formatters.getDateFormatter()));
-		this.colDate.setMinWidth(75);
+		this.colDate.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Shipment, String>, ObservableValue<String>>(){
+				@Override
+				public ObservableValue<String> call(TableColumn.CellDataFeatures<Shipment, String> cellData){
+					List<Action> traking = cellData.getValue().getTracking();
+					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+					return new SimpleStringProperty(sdf.format(traking.get(traking.size()-1).getDate()));
+				}
+		});
+		this.colDate.setMinWidth(100);
 		
 		this.colSender.setCellValueFactory(new PropertyValueFactory<Shipment, Address>("sender"));
 		this.colSender.setCellFactory(TextFieldTableCell.forTableColumn(Formatters.getSenderConverter()));
@@ -115,111 +133,23 @@ public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 		this.colRecipient.setMinWidth(100);
 
 		this.colWeight.setCellValueFactory(new PropertyValueFactory<Shipment, Integer>("weight"));
-		this.colWeight.setMinWidth(75);
+		this.colWeight.setMinWidth(15);
+
 		
 		this.colSize.setCellValueFactory(new PropertyValueFactory<Shipment, String>("dimensions"));
 		this.colSize.setMinWidth(75);
 		
 		this.colExpress.setCellValueFactory(new PropertyValueFactory<Shipment, Boolean>("express"));
-		this.colExpress.setMinWidth(50);
+		this.colExpress.setMinWidth(15);
 		
 		this.colFragile.setCellValueFactory(new PropertyValueFactory<Shipment, Boolean>("fragile"));
-		this.colFragile.setMinWidth(50);
+		this.colFragile.setMinWidth(15);
 		
 		this.colStatus.setCellValueFactory(new PropertyValueFactory<Shipment, String>("status"));
 		this.colStatus.setMinWidth(75);
 		this.reloadShipments();
 		// HAY QUE MODIFICAR VISTA SEGUN USUARIO
 
-		// this.shipmentsTable.setEditable(true);
-		// this.shipmentsTable.getSelectionModel().setCellSelectionEnabled(true);
-		// this.shipmentsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-		//
-		// this.colId.setMinWidth(40);
-		// this.colId.setMaxWidth(60);
-		// this.colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-		//
-		// this.colSender.setMinWidth(100);
-		// this.colSender.setMaxWidth(160);
-		// this.colSender.setCellValueFactory(new PropertyValueFactory<Shipment,
-		// String>("sender"));
-		// this.colSender.setCellFactory(TextFieldTableCell.forTableColumn());
-		// this.colSender.setEditable(false);
-		//
-		// this.colRecipient.setMinWidth(200);
-		// this.colRecipient.setMaxWidth(260);
-		// this.colRecipient.setCellValueFactory(new PropertyValueFactory<Shipment,
-		// String>("recipient"));
-		// this.colRecipient.setCellFactory(TextFieldTableCell.forTableColumn());
-		// this.colRecipient.setEditable(false);
-		//
-		// this.colWeight.setMinWidth(50);
-		// this.colWeight.setMaxWidth(50);
-		// this.colWeight.setCellValueFactory(new PropertyValueFactory<Shipment,
-		// Integer>("weight"));
-		// this.colWeight.setEditable(false);
-		//
-		// this.colHeigth.setMinWidth(50);
-		// this.colHeigth.setMaxWidth(50);
-		// this.colHeigth.setCellValueFactory(new PropertyValueFactory<Shipment,
-		// Integer>("height"));
-		// this.colHeigth.setEditable(false);
-		//
-		// this.colLength.setMinWidth(50);
-		// this.colLength.setMaxWidth(50);
-		// this.colLength.setCellValueFactory(new PropertyValueFactory<Shipment,
-		// String>("length"));
-		// this.colLength.setCellFactory(TextFieldTableCell.forTableColumn());
-		// this.colLength.setEditable(false);
-		//
-		// this.colExpress.setMinWidth(50);
-		// this.colExpress.setMaxWidth(50);
-		// this.colExpress.setCellValueFactory(new PropertyValueFactory<Shipment,
-		// Boolean>("express"));
-		//
-		// this.colFragile.setMinWidth(50);
-		// this.colFragile.setMaxWidth(50);
-		// this.colFragile.setCellValueFactory(new PropertyValueFactory<Shipment,
-		// Boolean>("fragile"));
-
-		// User user = ResourceManager.getInstance().getCurrentUser();
-
-		// if (!(user instanceof LogisticsManager)) {
-		// this.colFragile.setVisible(false);
-		// this.colFragile.setMinWidth(0);
-		// this.colFragile.setMaxWidth(0);
-		// } else {
-		// this.colFragile.setMinWidth(50);
-		// this.colFragile.setMaxWidth(70);
-		// this.colFragile.setCellValueFactory(
-		// new Callback<TableColumn.CellDataFeatures<Shipment, Boolean>,
-		// ObservableValue<Boolean>>() {
-		// @Override
-		// public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Shipment,
-		// Boolean> cell) {
-		// return new SimpleBooleanProperty(false);
-		// }
-		// });
-		//
-		// this.colFragile.setCellFactory(new ColumnButton<Shipment, Boolean>(
-		// ResourceManager.getInstance().getText("fxml.text.viewShipments.col.fragile"),
-		// new Image(getClass().getResourceAsStream("resources/recycle-bin.png"))) {
-		// @Override
-		// public void buttonAction(Shipment shipment) {
-		// try {
-		// boolean result = ControllerMenu.showConfirm(
-		// ResourceManager.getInstance().getText("fxml.text.viewShipments.fragile.title"),
-		// ResourceManager.getInstance().getText("fxml.text.viewShipments.fragile.text"));
-		//// if (result) {
-		//// deleteShipment(shipment);
-		//// }
-		// } catch (Exception e) {
-		// ControllerMenu.showError(ResourceManager.getInstance().getText("error.viewShipments.delete"),
-		// e.getMessage(), ExceptionUtils.getStackTrace(e));
-		// }
-		// }
-		// });
-		// }
 	}
 
 	private void setCombos(ResourceBundle resource) {
@@ -252,67 +182,30 @@ public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 		});
 	}
 
-	// private void deleteShipment(Shipment shipment) throws Exception {
-	// final ServiceDeleteShipment deleteShipment = new
-	// ServiceDeleteShipment(shipment);
-	//
-	// deleteShipment.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-	// @Override
-	// public void handle(WorkerStateEvent t) {
-	// reloadShipments();
-	// }
-	// });
-	//
-	// deleteShipment.setOnFailed(new EventHandler<WorkerStateEvent>() {
-	// @Override
-	// public void handle(WorkerStateEvent t) {
-	// Throwable e = t.getSource().getException();
-	//
-	// ControllerMenu.showError(ResourceManager.getInstance().getText("error.viewShipments.delete.web.service"),
-	// e.getMessage(), ExceptionUtils.getStackTrace(e));
-	// }
-	// });
-	//
-	// deleteShipment.start();
-	// }
-
-	// private void saveShipment(Shipment shipment, boolean insert) throws Exception
-	// {
-	// final ServiceSaveShipment saveShipment = new ServiceSaveShipment(shipment,
-	// insert);
-	//
-	// saveShipment.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-	// @Override
-	// public void handle(WorkerStateEvent t) {
-	// // Refresh table or do other actions after successful save
-	// }
-	// });
-	//
-	// saveShipment.setOnFailed(new EventHandler<WorkerStateEvent>() {
-	// @Override
-	// public void handle(WorkerStateEvent t) {
-	// Throwable e = t.getSource().getException();
-	//
-	// ControllerMenu.showError(ResourceManager.getInstance().getText("error.viewShipments.save.web.service"),
-	// e.getMessage(), ExceptionUtils.getStackTrace(e));
-	// }
-	// });
-	//
-	// saveShipment.start();
-	// }
 
 	private void reloadShipments() {
 		this.shipmentsTable.setEditable(false);
+		Pair<String, String> status = this.cmbStatus.getValue();
+		Pair<String, String> category = this.cmbCategory.getValue();
 
-		final ServiceQueryShipments queryShipments = new ServiceQueryShipments();
+
+		final ServiceQueryShipments queryShipments = new ServiceQueryShipments(status, category);
 
 		queryShipments.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override
 			public void handle(WorkerStateEvent t) {
 				shipmentsTable.setEditable(true);
 				List<Shipment> shipments = queryShipments.getValue();
+				
+//				for (Shipment shipment : shipments) {
+//					Shipment shipmentWithUpdatedDate = shipment;
+//					// get last date
+//					shipmentWithUpdatedDate.getReceptionDate();
+//					
+//					shipment = shipmentWithUpdatedDate;
+//				}
+				
 				populateTable(shipments);
-				System.out.println(shipments.size());
 			}
 
 		});

@@ -54,11 +54,12 @@
 				<TableView fx:id="shipmentsTable" editable="true" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="160.0">
 					<columns>
 						<TableColumn fx:id="colId" editable="false" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.id" />
-                  <TableColumn fx:id="colDate" editable="false" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.date" />
+						<TableColumn fx:id="colCateg" editable="false" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.category" />
+                  		<TableColumn fx:id="colDate" editable="false" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.date" />
 						<TableColumn fx:id="colSender" editable="false" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.sender" />
 						<TableColumn fx:id="colRecipient" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.recipient" />
-						<TableColumn fx:id="colSize" prefWidth="75.0" styleClass="col-left" text="%fxml.text.formShipment.shipment.size" />
-						<TableColumn fx:id="colWeight" prefWidth="75.0" styleClass="col-left" text="%fxml.text.formShipment.shipment.weight" />
+						<TableColumn fx:id="colSize" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.size" />
+						<TableColumn fx:id="colWeight" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.weight" />
 						<TableColumn fx:id="colExpress" editable="false" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.express" />
 						<TableColumn fx:id="colFragile" editable="false" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.fragile" />
 						<TableColumn fx:id="colStatus" editable="false" prefWidth="75.0" styleClass="col-center" text="%fxml.text.formShipment.shipment.status" />
