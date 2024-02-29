@@ -53,41 +53,61 @@ import javafx.util.Pair;
 public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 	@FXML
 	private BorderPane viewUsersDirectory;
+	
 	@FXML
 	private TextField txtFullnameSearch;
+	
 	@FXML
 	private ComboBox<Pair<String, String>> cmbStatus;
+	
 	@FXML
 	private ComboBox<Pair<String, String>> cmbCategory;
+	
 	@FXML
 	private TableView<Shipment> shipmentsTable;
-
+	
 	@FXML
 	private TableColumn<Shipment, Number> colId;
+	
 	@FXML
 	private TableColumn<Shipment, String> colCateg;
+	
 	@FXML
 	private TableColumn<Shipment, String> colDate;
+	
 	@FXML
 	private TableColumn<Shipment, Address> colSender;
+	
 	@FXML
 	private TableColumn<Shipment, Address> colRecipient;
+	
 	@FXML
 	private TableColumn<Shipment, String> colSize;
+	
 	@FXML
 	private TableColumn<Shipment, Integer> colWeight;
+	
 	@FXML
 	private TableColumn<Shipment, Integer> colHeight;
+	
 	@FXML
 	private TableColumn<Shipment, String> colWidth;
+	
 	@FXML
 	private TableColumn<Shipment, String> colLength;
+	
 	@FXML
 	private TableColumn<Shipment, Boolean> colExpress;
+	
 	@FXML
 	private TableColumn<Shipment, Boolean> colFragile;
+	
 	@FXML
 	private TableColumn<Shipment, String> colStatus;
+	
+	@FXML
+	private TextField tvDateSearch;
+
 
 	/**
 	 * Initializes the controller class.
@@ -189,6 +209,7 @@ public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 //		System.out.println("si");
 		Status[] status = null;
 		Category[] categ = null;
+		String search = this.tvDateSearch.getText();
 		this.shipmentsTable.setEditable(false);
 		Pair<String, String> state = this.cmbStatus.getValue();
 		Pair<String, String> category = this.cmbCategory.getValue();
@@ -200,7 +221,7 @@ public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 //			category = new Category[] {Category.valueOf(categ.getKey())};
 //		}
 
-		final ServiceQueryShipments queryShipments = new ServiceQueryShipments(categ, status);
+		final ServiceQueryShipments queryShipments = new ServiceQueryShipments(categ, status, search);
 
 		queryShipments.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override

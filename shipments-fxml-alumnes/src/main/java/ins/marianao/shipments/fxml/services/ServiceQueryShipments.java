@@ -25,14 +25,15 @@ public class ServiceQueryShipments extends ServiceQueryBase<Shipment> {
 
 	private Category[] category;
     private Status[] status;
-    
+    private String fullDate;
     
 
    
-	public ServiceQueryShipments(Category[] category, Status[] status) {
+	public ServiceQueryShipments(Category[] category, Status[] status, String fullDate) {
 		super();
 		this.category = category;
 		this.status = status;
+		this.fullDate = fullDate;
 	}
 
 
@@ -54,6 +55,10 @@ public class ServiceQueryShipments extends ServiceQueryBase<Shipment> {
 			for (Category categ : category) {
 				webTarget = webTarget.queryParam("category", categ.name());
 			}
+		}
+        
+        if (this.fullDate != null && !this.fullDate.isBlank()) {
+			webTarget = webTarget.queryParam("date", fullDate);
 		}
 
 
