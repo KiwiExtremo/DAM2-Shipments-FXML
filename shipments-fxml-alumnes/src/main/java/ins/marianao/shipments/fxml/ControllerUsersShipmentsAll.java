@@ -22,6 +22,8 @@ import ins.marianao.shipments.fxml.model.Action;
 import ins.marianao.shipments.fxml.model.Address;
 //import ins.marianao.shipments.fxml.model.LogisticsManager;
 import ins.marianao.shipments.fxml.model.Shipment;
+import ins.marianao.shipments.fxml.model.Shipment.Category;
+import ins.marianao.shipments.fxml.model.Shipment.Status;
 import ins.marianao.shipments.fxml.model.User;
 import ins.marianao.shipments.fxml.model.User.Role;
 //import ins.marianao.shipments.fxml.services.ServiceDeleteUser;
@@ -103,9 +105,35 @@ public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 //		});
 
 		
-		setCombos(resource);
+//		setCombos(resource);
+		List<Pair<String, String>> status = Arrays.stream(Shipment.Status.values()).map(s -> {
+			String key = s.name();
+			return new Pair<>(key, resource.getString("text.Status." + key));
+		}).collect(Collectors.toList());
 
-		//setComboCategory(resource);
+		ObservableList<Pair<String, String>> listStatus = FXCollections.observableArrayList(status);
+//			listStatus.add(0, null);
+
+		this.cmbStatus.setItems(listStatus);
+		this.cmbStatus.setConverter(Formatters.getStringPairConverter("Status"));
+
+		this.cmbStatus.valueProperty().addListener((observable, oldValue, newValue) -> {
+			reloadShipments();
+		});
+		List<Pair<String, String>> category = Arrays.stream(Shipment.Category.values()).map(c -> {
+			String key = c.name();
+			return new Pair<>(key, resource.getString("text.Category." + key));
+		}).collect(Collectors.toList());
+
+		ObservableList<Pair<String, String>> listCategory = FXCollections.observableArrayList(category);
+
+		this.cmbCategory.setItems(listCategory);
+		this.cmbCategory.setConverter(Formatters.getStringPairConverter("Category"));
+
+		this.cmbCategory.valueProperty().addListener((observable, oldValue, newValue) -> {
+			reloadShipments();
+		});
+		
 
 		this.colId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		this.colId.setMinWidth(10);
@@ -119,7 +147,7 @@ public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 				public ObservableValue<String> call(TableColumn.CellDataFeatures<Shipment, String> cellData){
 					List<Action> traking = cellData.getValue().getTracking();
 					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-					return new SimpleStringProperty(sdf.format(traking.get(traking.size()-1).getDate()));
+					return new SimpleStringProperty(sdf.format(traking.get(0).getDate()));
 				}
 		});
 		this.colDate.setMinWidth(100);
@@ -153,59 +181,34 @@ public class ControllerUsersShipmentsAll extends AbstractControllerPDF {
 	}
 
 	private void setCombos(ResourceBundle resource) {
-		List<Pair<String, String>> status = Arrays.stream(Shipment.Status.values()).map(s -> {
-			String key = s.name();
-			return new Pair<>(key, resource.getString("text.Status." + key));
-		}).collect(Collectors.toList());
-
-		ObservableList<Pair<String, String>> listStatus = FXCollections.observableArrayList(status);
-//			listStatus.add(0, null);
-
-		this.cmbStatus.setItems(listStatus);
-		this.cmbStatus.setConverter(Formatters.getStringPairConverter("Status"));
-
-		this.cmbStatus.valueProperty().addListener((observable, oldValue, newValue) -> {
-			reloadShipments();
-		});
-		List<Pair<String, String>> category = Arrays.stream(Shipment.Category.values()).map(c -> {
-			String key = c.name();
-			return new Pair<>(key, resource.getString("text.Category." + key));
-		}).collect(Collectors.toList());
-
-		ObservableList<Pair<String, String>> listCategory = FXCollections.observableArrayList(category);
-
-		this.cmbCategory.setItems(listCategory);
-		this.cmbCategory.setConverter(Formatters.getStringPairConverter("Category"));
-
-		this.cmbCategory.valueProperty().addListener((observable, oldValue, newValue) -> {
-			reloadShipments();
-		});
+		
 	}
 
 
 	private void reloadShipments() {
+//		System.out.println("si");
+		Status[] status = null;
+		Category[] categ = null;
 		this.shipmentsTable.setEditable(false);
-		Pair<String, String> status = this.cmbStatus.getValue();
+		Pair<String, String> state = this.cmbStatus.getValue();
 		Pair<String, String> category = this.cmbCategory.getValue();
+		
+		if (state != null) {status = new Status[] { Status.valueOf(state.getKey()) };}
+		if(category != null) {categ = new Category[] { Category.valueOf(category.getKey()) };}
+		 
+//		if (categ != null) {
+//			category = new Category[] {Category.valueOf(categ.getKey())};
+//		}
 
-
-		final ServiceQueryShipments queryShipments = new ServiceQueryShipments(status, category);
+		final ServiceQueryShipments queryShipments = new ServiceQueryShipments(categ, status);
 
 		queryShipments.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override
 			public void handle(WorkerStateEvent t) {
 				shipmentsTable.setEditable(true);
 				List<Shipment> shipments = queryShipments.getValue();
-				
-//				for (Shipment shipment : shipments) {
-//					Shipment shipmentWithUpdatedDate = shipment;
-//					// get last date
-//					shipmentWithUpdatedDate.getReceptionDate();
-//					
-//					shipment = shipmentWithUpdatedDate;
-//				}
-				
 				populateTable(shipments);
+//				System.out.println("query" + shipments.size());
 			}
 
 		});

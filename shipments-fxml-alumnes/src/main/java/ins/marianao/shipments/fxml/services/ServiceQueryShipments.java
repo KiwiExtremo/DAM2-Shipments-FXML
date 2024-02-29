@@ -16,6 +16,8 @@ import ins.marianao.shipments.fxml.manager.ResourceManager;
 import ins.marianao.shipments.fxml.model.Shipment;
 import ins.marianao.shipments.fxml.model.Shipment.Category;
 import ins.marianao.shipments.fxml.model.Shipment.Status;
+import ins.marianao.shipments.fxml.model.User.Role;
+import javafx.util.Pair;
 
 public class ServiceQueryShipments extends ServiceQueryBase<Shipment> {
 
@@ -24,18 +26,36 @@ public class ServiceQueryShipments extends ServiceQueryBase<Shipment> {
 	private Category[] category;
     private Status[] status;
     
-    public ServiceQueryShipments(Status[] status, Category[] category) {
-    	this.status = status;
-		this.category = category;
     
-    }
 
-    @Override
+   
+	public ServiceQueryShipments(Category[] category, Status[] status) {
+		super();
+		this.category = category;
+		this.status = status;
+	}
+
+
+
+
+	@Override
     protected List<Shipment> customCall() throws Exception {
         Client client = ResourceManager.getInstance().getWebClient();
         WebTarget webTarget = client.target(ResourceManager.getInstance().getParam("web.service.host.url"))
                                     .path(PATH_REST_SHIPMENT)
                                     .path(PATH_QUERY_ALL);
+        if (this.status != null) {
+			for (Status state : status) {
+				webTarget = webTarget.queryParam("status", state.name());
+			}
+		}
+        
+        if (this.category != null) {
+			for (Category categ : category) {
+				webTarget = webTarget.queryParam("category", categ.name());
+			}
+		}
+
 
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
         List<Shipment> shipments = new LinkedList<Shipment>();
