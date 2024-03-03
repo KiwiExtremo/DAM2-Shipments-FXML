@@ -170,8 +170,8 @@ public class ControllerMenu implements Initializable {
 	 */
 	@FXML
 	public void receptionMenuClick(ActionEvent event) {
-		// TODO open shipment's form
-		return;
+		// TODO solo lo pueden usar receptionist
+		this.openShipmentForm();
 	}
 
 	/**
@@ -426,6 +426,20 @@ public class ControllerMenu implements Initializable {
 			if (!perfil) {
 				controllerFormUsuari.enableEdition();
 			}
+
+			this.loadView(vista);
+		} catch (Exception e) {
+			e.printStackTrace();
+			ControllerMenu.showError(ResourceManager.getInstance().getText("error.menu.view.opening"), e.getMessage(),
+					ExceptionUtils.getStackTrace(e));
+		}
+	}
+	
+	private void openShipmentForm() {//Falta cambiar el controller
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewFormNewShipment.fxml"),
+					ResourceManager.getInstance().getTranslationBundle());
+			BorderPane vista = (BorderPane) loader.load();
 
 			this.loadView(vista);
 		} catch (Exception e) {
