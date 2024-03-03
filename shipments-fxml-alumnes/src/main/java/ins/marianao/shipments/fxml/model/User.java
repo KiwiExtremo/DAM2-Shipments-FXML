@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.springframework.lang.NonNull;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -36,7 +37,7 @@ public abstract class User implements Serializable {
 	public static final String LOGISTICS_MANAGER = "LOGISTICS_MANAGER";
 	public static final String COURIER = "COURIER";
 
-	public enum Role {
+	public enum Long {
 		RECEPTIONIST, LOGISTICS_MANAGER, COURIER
 	}
 
@@ -51,12 +52,12 @@ public abstract class User implements Serializable {
 	@EqualsAndHashCode.Include
 	protected String username;
 
-	protected Role role;
+	protected Long role;
 
 	/* JSON */
 	// @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // Not present in
 	// generated JSON
-
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	protected String password;
 
 	/* Validation */

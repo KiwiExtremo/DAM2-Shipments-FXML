@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 
-<BorderPane fx:id="viewProfileForm" prefHeight="540.0" prefWidth="900.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ins.marianao.shipments.fxml.ControllerFormUser">
+<BorderPane fx:id="viewProfileForm" prefHeight="540.0" prefWidth="900.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ins.marianao.shipments.fxml.ControllerFormUser">
    <center>
 		<AnchorPane styleClass="centerregion">
 			<children>
@@ -96,7 +96,7 @@
                      <children>
                         <HBox fx:id="boxReceptionists" spacing="20.0" styleClass="panel-solid">
                            <children>
-                              <HBox styleClass="input-group" HBox.hgrow="ALWAYS">
+                              <HBox fx:id="labelComboReceptionists" styleClass="input-group" HBox.hgrow="ALWAYS">
                                  <children>
                                     <Label text="%fxml.text.formUser.office.lbl">
                                        <styleClass>

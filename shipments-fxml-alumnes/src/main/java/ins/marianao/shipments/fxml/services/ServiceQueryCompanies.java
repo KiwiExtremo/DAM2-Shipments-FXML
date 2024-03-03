@@ -13,42 +13,22 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import ins.marianao.shipments.fxml.manager.ResourceManager;
-import ins.marianao.shipments.fxml.model.User;
-import ins.marianao.shipments.fxml.model.User.Long;
+import ins.marianao.shipments.fxml.model.Company;
 
-public class ServiceQueryUsers extends ServiceQueryBase<User> {
+public class ServiceQueryCompanies extends ServiceQueryBase<Company> {
 
-	public static final String PATH_REST_USERS = "users";
-
-	private Long[] roles;
-
-	private String fullName;
-
-	public ServiceQueryUsers(Long[] roles, String fullName) {
-		this.roles = roles;
-		this.fullName = fullName;
-	}
+	public static final String PATH_REST_COMPANIES = "companies";
 
 	@Override
-	protected List<User> customCall() throws Exception {
+	protected List<Company> customCall() throws Exception {
 		Client client = ResourceManager.getInstance().getWebClient();
 
 		WebTarget webTarget = client.target(ResourceManager.getInstance().getParam("web.service.host.url"))
-				.path(PATH_REST_USERS).path(PATH_QUERY_ALL);
-
-		if (this.roles != null) {
-			for (Long role : roles) {
-				webTarget = webTarget.queryParam("roles", role.name());
-			}
-		}
-
-		if (this.fullName != null && !this.fullName.isBlank()) {
-			webTarget = webTarget.queryParam("fullName", fullName);
-		}
+				.path(PATH_REST_COMPANIES).path(PATH_QUERY_ALL);
 
 		Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
 
-		List<User> users = new LinkedList<User>();
+		List<Company> companies = new LinkedList<Company>();
 		try {
 			Response response = invocationBuilder.get();
 
@@ -56,7 +36,7 @@ public class ServiceQueryUsers extends ServiceQueryBase<User> {
 				throw new Exception(ResourceManager.getInstance().responseErrorToString(response));
 			}
 
-			users = response.readEntity(new GenericType<List<User>>() {
+			companies = response.readEntity(new GenericType<List<Company>>() {
 			});
 
 		} catch (ResponseProcessingException e) {
@@ -72,6 +52,6 @@ public class ServiceQueryUsers extends ServiceQueryBase<User> {
 			throw e;
 		}
 
-		return users;
+		return companies;
 	}
 }
