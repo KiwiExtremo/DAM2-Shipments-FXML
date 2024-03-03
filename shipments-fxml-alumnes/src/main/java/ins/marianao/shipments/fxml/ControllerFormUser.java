@@ -43,7 +43,7 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 	@FXML
 	private BorderPane viewProfileForm;
 	@FXML
-	private HBox boxReceptionists, labelComboReceptionists;
+	private HBox boxReceptionists;
 	@FXML
 	private HBox boxCouriers;
 	@FXML
@@ -82,9 +82,6 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 
 		this.loadOffices(cmbOffice);
 		this.loadCompanies(cmbCompany);
-
-		// this.cmbOffice.setConverter(Formatters.getOfficeConverter(cmbOffice.getItems()));
-		// this.cmbCompany.setConverter(Formatters.getCompanyConverter(cmbCompany.getItems()));
 
 		// this.lblUsuari.setText("\u2386");
 		// this.lblNom.setText("\u1F604");
@@ -131,9 +128,10 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 
 				this.cmbOffice.setValue(office);
 
-				LinkedList<Office> ofs = new LinkedList<>();
-				ofs.add(office);
-				this.cmbOffice.setConverter(Formatters.getOfficeConverter(ofs));
+				LinkedList<Office> officeList = new LinkedList<>();
+				officeList.add(office);
+				
+				this.cmbOffice.setConverter(Formatters.getOfficeConverter(officeList));
 
 				this.txtPlace.setText(receptionist.getPlace());
 
@@ -331,6 +329,7 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 			@Override
 			public void handle(WorkerStateEvent t) {
 				combo.setVisible(false);
+				
 				combo.setEditable(true);
 
 				combo.getItems().clear();
