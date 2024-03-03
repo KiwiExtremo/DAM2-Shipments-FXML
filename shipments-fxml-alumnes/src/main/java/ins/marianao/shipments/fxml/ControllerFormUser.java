@@ -1,6 +1,7 @@
 package ins.marianao.shipments.fxml;
 
 import java.net.URL;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Function;
@@ -45,13 +46,10 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 	private HBox boxReceptionists;
 	@FXML
 	private HBox boxCouriers;
-
 	@FXML
 	private Button btnSave;
-
 	@FXML
 	private ComboBox<Pair<String, String>> cmbRole;
-
 	@FXML
 	private TextField txtUsername;
 	@FXML
@@ -62,7 +60,6 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 	private TextField txtFullname;
 	@FXML
 	private TextField txtExtension;
-
 	@FXML
 	private ComboBox<Office> cmbOffice;
 	@FXML
@@ -72,6 +69,10 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 
 	private boolean edicio;
 
+	protected Company selectedCompany;
+
+	protected Office selectedOffice;
+
 	/**
 	 * Initializes the controller class.
 	 */
@@ -80,7 +81,6 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 		this.edicio = false;
 
 		this.loadOffices(cmbOffice);
-
 		this.loadCompanies(cmbCompany);
 
 		// this.lblUsuari.setText("\u2386");
@@ -119,7 +119,6 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 				Courier courier = (Courier) user;
 				Company company = courier.getCompany();
 
-				this.cmbCompany.setConverter(Formatters.getCompanyConverter());
 				this.cmbCompany.setValue(company);
 
 				this.enableCourierFields();
@@ -127,12 +126,16 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 				Receptionist receptionist = (Receptionist) user;
 				Office office = receptionist.getOffice();
 
-				this.cmbOffice.setConverter(Formatters.getOfficeConverter());
 				this.cmbOffice.setValue(office);
+
+				LinkedList<Office> officeList = new LinkedList<>();
+				officeList.add(office);
+				
+				this.cmbOffice.setConverter(Formatters.getOfficeConverter(officeList));
 
 				this.txtPlace.setText(receptionist.getPlace());
 
-				this.enableReceptinistFields();
+				this.enableReceptionistFields();
 			}
 		}
 	}
@@ -171,7 +174,7 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 		this.cmbCompany.setVisible(true);
 	}
 
-	private void enableReceptinistFields() {
+	private void enableReceptionistFields() {
 		this.boxReceptionists.toFront();
 		this.boxCouriers.toBack();
 
@@ -194,7 +197,7 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 				this.enableCourierFields();
 			} else {
 				// Receptionists or LogisticsManagers
-				this.enableReceptinistFields();
+				this.enableReceptionistFields();
 			}
 		}
 	}
@@ -229,9 +232,9 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 					Courier courier = (Courier) user;
 					courier.setCompany(company);
 				} else {
-					Receptionist receptinist = (Receptionist) user;
-					receptinist.setOffice(office);
-					receptinist.setPlace(strPlace);
+					Receptionist receptionist = (Receptionist) user;
+					receptionist.setOffice(office);
+					receptionist.setPlace(strPlace);
 				}
 
 				saveUserProfile(user, false);
@@ -271,11 +274,16 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 
 				User user = saveUser.getValue();
 
-				if (user instanceof Courier) {
+				if (!(user instanceof Courier)) {
+					Office office;
 
-				} else {
-					Receptionist receptionist = (Receptionist) user;
-					Office office = receptionist.getOffice();
+					if (user instanceof LogisticsManager) {
+						LogisticsManager logManager = (LogisticsManager) user;
+						office = logManager.getOffice();
+					} else {
+						Receptionist receptionist = (Receptionist) user;
+						office = receptionist.getOffice();
+					}
 
 					if (office != null && !cmbOffice.getItems().contains(office)) { // New Office
 						cmbOffice.getItems().add(office);
@@ -320,13 +328,24 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 
 			@Override
 			public void handle(WorkerStateEvent t) {
+				combo.setVisible(false);
+				
 				combo.setEditable(true);
 
 				combo.getItems().clear();
 
 				ObservableList<Office> offices = FXCollections.observableArrayList(queryOffices.getValue());
 
+				Office office = combo.getSelectionModel().getSelectedItem();
+
 				combo.setItems(offices);
+
+				combo.setValue(office);
+
+				combo.setConverter(Formatters.getOfficeConverter(offices));
+
+				combo.setVisible(true);
+
 			}
 		});
 
@@ -342,7 +361,7 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 			}
 		});
 
-		return;
+		queryOffices.start();
 	}
 
 	protected void loadCompanies(ComboBox<Company> combo) {
@@ -359,7 +378,14 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 
 				ObservableList<Company> companies = FXCollections.observableArrayList(queryCompanies.getValue());
 
+				Company company = combo.getSelectionModel().getSelectedItem();
+
 				combo.setItems(companies);
+
+				combo.setValue(company);
+
+				combo.setConverter(Formatters.getCompanyConverter(companies));
+
 			}
 		});
 
@@ -375,6 +401,6 @@ public class ControllerFormUser implements Initializable, ChangeListener<Pair<St
 			}
 		});
 
-		return;
+		queryCompanies.start();
 	}
 }

@@ -28,6 +28,5 @@ public class Company implements Serializable {
 	private Long id;
 
 	@NonNull // Lombok. @RequiredArgsConstructor
-
 	private String name;
 }
