@@ -21,6 +21,7 @@ public class ServiceQueryUsers extends ServiceQueryBase<User> {
 	public static final String PATH_REST_USERS = "users";
 
 	private Long[] roles;
+
 	private String fullName;
 
 	public ServiceQueryUsers(Long[] roles, String fullName) {

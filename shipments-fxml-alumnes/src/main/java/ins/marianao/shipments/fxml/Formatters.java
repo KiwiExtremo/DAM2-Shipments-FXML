@@ -6,6 +6,8 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -13,6 +15,8 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang3.StringUtils;
 
 import ins.marianao.shipments.fxml.manager.ResourceManager;
+import ins.marianao.shipments.fxml.model.Address;
+import ins.marianao.shipments.fxml.model.Shipment;
 import ins.marianao.shipments.fxml.model.Company;
 import ins.marianao.shipments.fxml.model.Office;
 import ins.marianao.shipments.fxml.model.User;
@@ -102,6 +106,58 @@ public class Formatters {
 			}
 		};
 		return converter;
+	}
+	
+	public static StringConverter<Shipment> getSizeConverter() {
+		StringConverter<Shipment> converter = new StringConverter<Shipment>() {
+			@Override
+			public String toString(Shipment shipment) {
+				return shipment == null ? "" : shipment.getDimensions();
+			}
+
+			// Unnecessary
+			@Override
+			public Shipment fromString(String string) {
+				return null;
+			}
+		};
+		return converter;
+	}
+
+	public static StringConverter<Address> getRecipientConverter() {
+
+		StringConverter<Address> converter = new StringConverter<Address>() {
+			@Override
+			public String toString(Address address) {
+				return address == null ? "" : address.getName();
+			}
+
+			// Unnecessary
+			@Override
+			public Address fromString(String string) {
+				return null;
+			}
+		};
+		return converter;
+	}
+
+	public static StringConverter<Address> getSenderConverter() {
+
+		StringConverter<Address> converter = new StringConverter<Address>() {
+			@Override
+			public String toString(Address address) {
+				return address == null ? "" : address.getName();
+			}
+
+			// Unnecessary
+			@Override
+			public Address fromString(String string) {
+				return null;
+			}
+
+		};
+		return converter;
+
 	}
 
 	public static StringConverter<User> getUserConverter(List<User> users) {
