@@ -6,6 +6,8 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -13,6 +15,10 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang3.StringUtils;
 
 import ins.marianao.shipments.fxml.manager.ResourceManager;
+import ins.marianao.shipments.fxml.model.Address;
+import ins.marianao.shipments.fxml.model.Shipment;
+import ins.marianao.shipments.fxml.model.Company;
+import ins.marianao.shipments.fxml.model.Office;
 import ins.marianao.shipments.fxml.model.User;
 import javafx.util.Pair;
 import javafx.util.StringConverter;
@@ -21,6 +27,69 @@ public class Formatters {
 	public static final int CC_NUM_SIZE = 16;
 	public static final int EXT_NUM_SIZE = 4;
 	public static final int CP_NUM_SIZE = 5;
+
+	public static StringConverter<Company> getCompanyConverter(List<Company> companies) {
+
+		StringConverter<Company> converter = new StringConverter<Company>() {
+
+			private Company findCompany(String companyName) {
+				if (companyName == null || "".equals(companyName)) {
+					return null;
+				}
+				for (Company company : companies) {
+					if (companyName.equals(company.getName())) {
+						return company;
+					}
+				}
+				return null;
+			}
+
+			@Override
+			public Company fromString(String companyName) {
+				if (findCompany(companyName) == null) {
+					return new Company(companyName);
+				}
+				return findCompany(companyName);
+			}
+
+			@Override
+			public String toString(Company company) {
+				return company == null ? "" : company.getName();
+			}
+
+		};
+		return converter;
+	}
+
+	public static StringConverter<Office> getOfficeConverter(List<Office> offices) {
+
+		StringConverter<Office> converter = new StringConverter<Office>() {
+
+			private Office findOffice(String officeName) {
+				if (officeName == null || "".equals(officeName)) {
+					return null;
+				}
+				for (Office office : offices) {
+					if (officeName.equals(office.getName())) {
+						return office;
+					}
+				}
+				return null;
+			}
+
+			@Override
+			public Office fromString(String officeName) {
+				return findOffice(officeName);
+			}
+
+			@Override
+			public String toString(Office office) {
+				return office == null ? "" : office.getName();
+			}
+
+		};
+		return converter;
+	}
 
 	public static StringConverter<User> getGenericUserConverter() {
 
@@ -37,6 +106,58 @@ public class Formatters {
 			}
 		};
 		return converter;
+	}
+	
+	public static StringConverter<Shipment> getSizeConverter() {
+		StringConverter<Shipment> converter = new StringConverter<Shipment>() {
+			@Override
+			public String toString(Shipment shipment) {
+				return shipment == null ? "" : shipment.getDimensions();
+			}
+
+			// Unnecessary
+			@Override
+			public Shipment fromString(String string) {
+				return null;
+			}
+		};
+		return converter;
+	}
+
+	public static StringConverter<Address> getRecipientConverter() {
+
+		StringConverter<Address> converter = new StringConverter<Address>() {
+			@Override
+			public String toString(Address address) {
+				return address == null ? "" : address.getName();
+			}
+
+			// Unnecessary
+			@Override
+			public Address fromString(String string) {
+				return null;
+			}
+		};
+		return converter;
+	}
+
+	public static StringConverter<Address> getSenderConverter() {
+
+		StringConverter<Address> converter = new StringConverter<Address>() {
+			@Override
+			public String toString(Address address) {
+				return address == null ? "" : address.getName();
+			}
+
+			// Unnecessary
+			@Override
+			public Address fromString(String string) {
+				return null;
+			}
+
+		};
+		return converter;
+
 	}
 
 	public static StringConverter<User> getUserConverter(List<User> users) {
